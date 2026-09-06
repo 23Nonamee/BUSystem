@@ -51,14 +51,6 @@ public class Product {
     }
   }
 
-  public void adjustStock(int newRealStock) {
-    if (newRealStock < 0) {
-      throw new IllegalArgumentException("Stock cannot be negative");
-    } else {
-      this.stock = newRealStock;
-    }
-  }
-
   public void decreaseStock(int amount){
     if (amount < 0) {
       throw new IllegalArgumentException("Stock cannot be negative");
@@ -68,4 +60,13 @@ public class Product {
       this.stock -= amount;
     }
   }
+
+  public void adjustStock(int newRealStock) {
+    if (newRealStock < 0) {
+      throw new IllegalArgumentException("Stock cannot be negative");
+    } else {
+      this.stock = newRealStock;
+    }
+  }
+
 }
