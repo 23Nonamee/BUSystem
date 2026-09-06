@@ -71,8 +71,20 @@ BUSystem/
 - **Características implementadas:**
   - Inmutabilidad de identidad (`final String id`).
   - *Fail-Fast* en constructor (`Objects.requireNonNull` e `IllegalArgumentException`).
-  - Lógica de negocio encapsulada sin *setters* ciegos. Se implementaron los métodos con intención semántica: `increaseStock()`, `decreaseStock()`, y `adjustStock()`.
+  - Lógica de negocio encapsulada sin *setters* ciegos: `increaseStock()`, `decreaseStock()`, y `adjustStock()`.
   - Defensa contra inventarios negativos y descuentos que superen las existencias.
+
+### ✅ Configuración de Build con Maven (`pom.xml`)
+- **Ubicación:** `pom.xml` en raíz.
+- **Configuración:** Maven 3.9+, Java Target 26, dependencia `org.junit.jupiter:junit-jupiter:5.10.2` en alcance `test`.
+- **Estado:** Compila limpio (`mvn compile` -> `BUILD SUCCESS`).
+
+### ✅ Suite de Pruebas Unitarias (`ProductTest.java`)
+- **Ubicación:** `src/test/java/com/busystem/domain/ProductTest.java`
+- **Pruebas implementadas:**
+  - `createProduct()`: Verificación del camino feliz (AAA: Arrange-Act-Assert) con `assertEquals`.
+  - `invalidStock()`: Verificación de excepciones esperadas con `assertThrows` y Lambdas (`increaseStock` negativo, `decreaseStock` negativo, `decreaseStock` mayor al stock, `adjustStock` negativo).
+- **Estado:** 100% de pruebas pasando (`mvn test` -> `BUILD SUCCESS`, 2 tests ejecutados en 0.041s).
 
 ---
 
@@ -83,17 +95,17 @@ BUSystem/
 | **Encapsulamiento y `final`** | Proteger estado interno e inmutabilidad de la identidad. |
 | **`BigDecimal` para dinero** | Evita errores de precisión flotante en cálculos financieros. |
 | **Fail-Fast & `requireNonNull`** | Validar precondiciones de inmediato para impedir objetos corruptos. |
-| **UI vs. Dominio (Separación)** | La interfaz gráfica provee la comodidad visual (UX), pero la capa de Dominio (Entidades) protege la verdad matemática. Las Entidades lanzan errores; la UI los atrapa y los muestra bonito. |
-| **Peligro de Setters Ciegos** | Un `setStock()` borra el historial y el "por qué" de la transacción. Se usan métodos con intención explícita: `increaseStock` (compra), `adjustStock` (auditoría/corrección). |
-| **i18n (Internacionalización)** | Los errores profesionales usan códigos (`ERR_STOCK`) y se traducen en la capa visual usando `ResourceBundles` (`.properties`). |
-| **Principio YAGNI** | "You Aren't Gonna Need It". No programar sistemas complejos (como i18n o frameworks pesados) "por si acaso" en el futuro, sino cuando el negocio realmente lo exija. |
+| **UI vs. Dominio (Separación)** | La interfaz gráfica provee la comodidad visual (UX), pero la capa de Dominio protege la verdad matemática. |
+| **Peligro de Setters Ciegos** | Un `setStock()` borra la intención del negocio. Se usan métodos semánticos explicitos (`increaseStock`, `decreaseStock`). |
+| **Apache Maven & `pom.xml`** | Gestor de dependencias y automatización de build. XML Namespace (`xmlns`) como diccionario de reglas oficiales XSD. |
+| **JUnit 5 (Jupiter)** | Framework universal de pruebas en Java. Anotaciones (`@Test`, `@DisplayName`), aserciones (`assertEquals`, `assertThrows`) e importaciones estáticas. |
+| **Patrón AAA (Arrange-Act-Assert)** | Estructura canónica de pruebas unitarias: 1. Preparar datos -> 2. Ejecutar método -> 3. Verificar resultados de a pares. |
 
 ---
 
 ## 📍 6. Punto Exacto de Retorno y Próximos Pasos
 
-El código base actual está limpio y compilando.  
-**Siguientes pasos sugeridos a elegir:**
-1. Generar la rama en Git, confirmar cambios (Commit) y asegurar el control de versiones.
-2. Iniciar el desarrollo de la entidad `Sale.java` (Venta).
-3. Escribir pruebas unitarias (JUnit) para `Product.java`.
+El código base actual está 100% verificado y testeado.  
+**Siguientes pasos sugeridos:**
+1. Consolidar cambios en Git en `main` siguiendo la estrategia de flujo de trabajo simplificado para desarrollador solo.
+2. Iniciar la interfaz de persistencia `ProductRepository.java` en `domain/` o la nueva entidad `Sale.java` (Venta).
