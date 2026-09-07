@@ -82,6 +82,14 @@ BUSystem/
   - Uso de `Optional.ofNullable()` para evitar `NullPointerException`.
 - **Estado:** Compila limpio (`mvn compile` -> `BUILD SUCCESS`).
 
+### ✅ Suite de Pruebas Unitarias e Integración en Memoria (100% Éxito)
+- **`ProductTest.java`:** `src/test/java/com/busystem/domain/ProductTest.java` (2 tests)
+  - Pruebas del camino feliz y excepciones de validación de negocio.
+- **`InMemoryProductRepositoryTest.java`:** `src/test/java/com/busystem/domain/InMemoryProductRepositoryTest.java` (3 tests)
+  - Pruebas de guardado, búsqueda por ID (`Optional`), productos inexistentes y listado general.
+- **Estado General:** 5 de 5 pruebas pasando en verde (`mvn test` -> `BUILD SUCCESS`, 0.045s).
+- **Flujo Git Profesional:** Fusionado a `main` y subido exitosamente a remoto (`git push origin main`).
+
 ---
 
 ## 🧠 5. Conceptos Abordados y Asimilados
@@ -100,13 +108,14 @@ BUSystem/
 | **Pico-paréntesis Genéricos `<>`** | Etiqueta de tipo estricta que impide meter objetos incorrectos en colecciones. |
 | **`Optional<T>`** | Caja contenedora segura para evitar errores de referencia nula en búsquedas. |
 | **Patrón Repository (Evans/Fowler/Bob Martin)** | Colección simulada en memoria en la capa de Infraestructura que implementa un Puerto en el Dominio. |
+| **Flujo Git Profesional (GitHub Flow)** | Uso de ramas `feat/`, Conventional Commits (`feat:`, `test:`, `docs:`), fusión limpia en `main` y sincronización remota (`git push`). |
 
 ---
 
 ## 📍 6. Punto Exacto de Retorno y Próximos Pasos
 
-El código base actual está 100% verificado y testeado.  
-**Siguientes pasos sugeridos:**
-1. Crear la suite de pruebas `InMemoryProductRepositoryTest.java` en `src/test/java/com/busystem/infrastructure/` para verificar la persistencia en memoria.
-2. Hacer commit convencional (`feat: implement InMemoryProductRepository`), fusionar la rama `feat/product-repository` a `main` y eliminar la rama.
-3. Iniciar la entidad de negocio `Sale.java` (Venta) o el servicio `ProductService.java`.
+El código base actual está 100% verificado, testeado y respaldado en la rama `main` remota.  
+**Siguientes pasos sugeridos a elegir:**
+1. Diseñar la entidad de dominio **`Sale.java`** (Venta) para registrar transacciones comerciales.
+2. Construir la capa de servicio **`ProductService.java`** (Casos de uso para el catálogo de productos).
+3. Construir la primera versión de la interfaz de consola **`CLI`** para interactuar con los productos.
