@@ -74,17 +74,13 @@ BUSystem/
   - Lógica de negocio encapsulada sin *setters* ciegos: `increaseStock()`, `decreaseStock()`, y `adjustStock()`.
   - Defensa contra inventarios negativos y descuentos que superen las existencias.
 
-### ✅ Configuración de Build con Maven (`pom.xml`)
-- **Ubicación:** `pom.xml` en raíz.
-- **Configuración:** Maven 3.9+, Java Target 26, dependencia `org.junit.jupiter:junit-jupiter:5.10.2` en alcance `test`.
+### ✅ Contrato e Implementación de Persistencia (`ProductRepository`)
+- **Interfaz (Dominio):** `src/main/java/com/busystem/domain/ProductRepository.java`
+  - Métodos: `save(Product)`, `findById(String)` (devuelve `Optional<Product>`), `findAll()` (devuelve `List<Product>`).
+- **Implementación en Memoria (Infraestructura):** `src/main/java/com/busystem/infrastructure/InMemoryProductRepository.java`
+  - Utiliza `Map<String, Product> internalMap = new HashMap<>()` para simular almacenamiento de alta velocidad O(1).
+  - Uso de `Optional.ofNullable()` para evitar `NullPointerException`.
 - **Estado:** Compila limpio (`mvn compile` -> `BUILD SUCCESS`).
-
-### ✅ Suite de Pruebas Unitarias (`ProductTest.java`)
-- **Ubicación:** `src/test/java/com/busystem/domain/ProductTest.java`
-- **Pruebas implementadas:**
-  - `createProduct()`: Verificación del camino feliz (AAA: Arrange-Act-Assert) con `assertEquals`.
-  - `invalidStock()`: Verificación de excepciones esperadas con `assertThrows` y Lambdas (`increaseStock` negativo, `decreaseStock` negativo, `decreaseStock` mayor al stock, `adjustStock` negativo).
-- **Estado:** 100% de pruebas pasando (`mvn test` -> `BUILD SUCCESS`, 2 tests ejecutados en 0.041s).
 
 ---
 
@@ -96,10 +92,14 @@ BUSystem/
 | **`BigDecimal` para dinero** | Evita errores de precisión flotante en cálculos financieros. |
 | **Fail-Fast & `requireNonNull`** | Validar precondiciones de inmediato para impedir objetos corruptos. |
 | **UI vs. Dominio (Separación)** | La interfaz gráfica provee la comodidad visual (UX), pero la capa de Dominio protege la verdad matemática. |
-| **Peligro de Setters Ciegos** | Un `setStock()` borra la intención del negocio. Se usan métodos semánticos explicitos (`increaseStock`, `decreaseStock`). |
+| **Peligro de Setters Ciegos** | Un `setStock()` borra la intención del negocio. Se usan métodos semánticos explícitos (`increaseStock`, `decreaseStock`). |
 | **Apache Maven & `pom.xml`** | Gestor de dependencias y automatización de build. XML Namespace (`xmlns`) como diccionario de reglas oficiales XSD. |
 | **JUnit 5 (Jupiter)** | Framework universal de pruebas en Java. Anotaciones (`@Test`, `@DisplayName`), aserciones (`assertEquals`, `assertThrows`) e importaciones estáticas. |
 | **Patrón AAA (Arrange-Act-Assert)** | Estructura canónica de pruebas unitarias: 1. Preparar datos -> 2. Ejecutar método -> 3. Verificar resultados de a pares. |
+| **Polimorfismo (Interfaz vs. Implementación)** | Declarar el tipo abstracto a la izquierda (`Map`) y la clase concreta a la derecha (`new HashMap<>()`) para máxima flexibilidad. |
+| **Pico-paréntesis Genéricos `<>`** | Etiqueta de tipo estricta que impide meter objetos incorrectos en colecciones. |
+| **`Optional<T>`** | Caja contenedora segura para evitar errores de referencia nula en búsquedas. |
+| **Patrón Repository (Evans/Fowler/Bob Martin)** | Colección simulada en memoria en la capa de Infraestructura que implementa un Puerto en el Dominio. |
 
 ---
 
@@ -107,5 +107,6 @@ BUSystem/
 
 El código base actual está 100% verificado y testeado.  
 **Siguientes pasos sugeridos:**
-1. Consolidar cambios en Git en `main` siguiendo la estrategia de flujo de trabajo simplificado para desarrollador solo.
-2. Iniciar la interfaz de persistencia `ProductRepository.java` en `domain/` o la nueva entidad `Sale.java` (Venta).
+1. Crear la suite de pruebas `InMemoryProductRepositoryTest.java` en `src/test/java/com/busystem/infrastructure/` para verificar la persistencia en memoria.
+2. Hacer commit convencional (`feat: implement InMemoryProductRepository`), fusionar la rama `feat/product-repository` a `main` y eliminar la rama.
+3. Iniciar la entidad de negocio `Sale.java` (Venta) o el servicio `ProductService.java`.
