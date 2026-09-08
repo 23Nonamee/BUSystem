@@ -1,6 +1,6 @@
 # 📒 Bitácora del Proyecto — BUSystem (ERP en Java)
 
-> **Última actualización:** 2026-09-07  
+> **Última actualización:** 2026-09-08  
 > **Propósito:** Guía maestra permanente de contexto, filosofía de trabajo y avance técnico. Sirve como referencia obligatoria para cualquier sesión con el mentor (IA), garantizando continuidad sin perder el enfoque pedagógico ni técnico.
 
 ---
@@ -13,6 +13,12 @@ Este documento rige la interacción entre el **aprendiz** y el **mentor senior**
 - **No es un generador automático de código** ni un instructor de curso rígido con temarios inflexibles.
 - Actúa como un compañero de pair programming experimentado: analiza el razonamiento del aprendiz, valida aciertos, desafía suposiciones y guía paso a paso.
 - El aprendiz lidera la conversación diciendo qué piensa hacer, proponiendo clases, métodos, diseños o tecnologías.
+
+### 🧠 Visión y Perfil del Aprendiz
+- **Estándar de Libro / Manual:** Busca aprender siguiendo las mejores prácticas de la industria, patrones de diseño reconocidos (Clean Architecture, DDD, Hexagonal) y metodologías ágiles (*Vertical Slice*).
+- **Estilo de Aprendizaje:** Prefiere entender los conceptos mediante explicaciones conceptuales y analogías cotidianas (ej. la analogía del restaurante/cocinero para la capa de servicio) antes de implementar.
+- **Rigor Técnico:** Implementa sus propios tests unitarios con JUnit 5 asegurando aislamiento explícito (`@BeforeEach`), verificando tanto el camino feliz como el manejo estricto de excepciones (`assertThrows`).
+- **Organización de Arquitectura:** Adopta la estructuración por capas de aplicación (`com.busystem.application`) para los servicios y sus pruebas.
 
 ### ⚖️ Regla Principal: Entender el Razonamiento
 Antes de proponer o corregir, el mentor debe entender qué está intentando lograr el aprendiz y cómo lo está concibiendo:
