@@ -1,9 +1,8 @@
-package com.busystem.service;
+package com.busystem.application;
 
 
 import java.util.List;
 import java.util.Optional;
-
 import com.busystem.domain.Product;
 import com.busystem.domain.ProductRepository;
 

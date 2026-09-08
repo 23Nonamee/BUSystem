@@ -1,6 +1,6 @@
 # 📒 Bitácora del Proyecto — BUSystem (ERP en Java)
 
-> **Última actualización:** 2026-09-06  
+> **Última actualización:** 2026-09-07  
 > **Propósito:** Guía maestra permanente de contexto, filosofía de trabajo y avance técnico. Sirve como referencia obligatoria para cualquier sesión con el mentor (IA), garantizando continuidad sin perder el enfoque pedagógico ni técnico.
 
 ---
@@ -56,9 +56,9 @@ BUSystem/
         └── java/
             └── com/
                 └── busystem/
-                    ├── domain/          ← Entidades y reglas puras (COMPLETADO: Product.java)
-                    ├── service/         ← Casos de uso / orquestación
-                    ├── infrastructure/  ← Base de datos, archivos, drivers
+                    ├── domain/          ← Entidades y reglas puras (COMPLETADO: Product.java, ProductRepository.java)
+                    ├── service/         ← Casos de uso / orquestación (COMPLETADO: ProductService.java)
+                    ├── infrastructure/  ← Base de datos, archivos, drivers (COMPLETADO: InMemoryProductRepository.java)
                     └── ui/              ← Interfaz de usuario (I/O)
 ```
 
@@ -80,15 +80,25 @@ BUSystem/
 - **Implementación en Memoria (Infraestructura):** `src/main/java/com/busystem/infrastructure/InMemoryProductRepository.java`
   - Utiliza `Map<String, Product> internalMap = new HashMap<>()` para simular almacenamiento de alta velocidad O(1).
   - Uso de `Optional.ofNullable()` para evitar `NullPointerException`.
-- **Estado:** Compila limpio (`mvn compile` -> `BUILD SUCCESS`).
 
-### ✅ Suite de Pruebas Unitarias e Integración en Memoria (100% Éxito)
+### ✅ Capa de Servicio / Casos de Uso (`ProductService.java`)
+- **Ubicación:** `src/main/java/com/busystem/service/ProductService.java`
+- **Métodos implementados:** `registerProduct`, `getProductById`, `getAllProducts`, `increaseProductStock`, `decreaseProductStock`, `adjustProductStock`.
+- **Características:**
+  - Inyección de dependencias a través del constructor recibiendo el contrato abstracto `ProductRepository`.
+  - Orquestación de casos de uso combinando búsqueda en repositorio, validación vía `orElseThrow`, delegación de reglas a la entidad y persistencia con `save()`.
+- **Estado:** Compilación limpia (`mvn compile` -> `BUILD SUCCESS`).
+
+### ✅ Suite de Pruebas Unitarias e Integración en Memoria (100% Éxito - 9/9 Pruebas)
 - **`ProductTest.java`:** `src/test/java/com/busystem/domain/ProductTest.java` (2 tests)
-  - Pruebas del camino feliz y excepciones de validación de negocio.
 - **`InMemoryProductRepositoryTest.java`:** `src/test/java/com/busystem/domain/InMemoryProductRepositoryTest.java` (3 tests)
-  - Pruebas de guardado, búsqueda por ID (`Optional`), productos inexistentes y listado general.
-- **Estado General:** 5 de 5 pruebas pasando en verde (`mvn test` -> `BUILD SUCCESS`, 0.045s).
-- **Flujo Git Profesional:** Fusionado a `main` y subido exitosamente a remoto (`git push origin main`).
+- **`ProductServiceTest.java`:** `src/test/java/com/busystem/application/ProductServiceTest.java` (4 tests)
+  - Pruebas con `@BeforeEach` para aislamiento limpio.
+  - Validación de registro de producto y búsqueda por ID.
+  - Verificación de listado vacío.
+  - Verificación del camino feliz para incremento, descuento y ajuste de stock (`increaseProductStock`, `decreaseProductStock`, `adjustProductStock`).
+  - Verificación de lanzamiento de `IllegalArgumentException` al buscar IDs inexistentes.
+- **Estado General:** 9 de 9 pruebas pasando en verde (`mvn test` -> `BUILD SUCCESS`, 1.19s).
 
 ---
 
@@ -104,18 +114,21 @@ BUSystem/
 | **Apache Maven & `pom.xml`** | Gestor de dependencias y automatización de build. XML Namespace (`xmlns`) como diccionario de reglas oficiales XSD. |
 | **JUnit 5 (Jupiter)** | Framework universal de pruebas en Java. Anotaciones (`@Test`, `@DisplayName`), aserciones (`assertEquals`, `assertThrows`) e importaciones estáticas. |
 | **Patrón AAA (Arrange-Act-Assert)** | Estructura canónica de pruebas unitarias: 1. Preparar datos -> 2. Ejecutar método -> 3. Verificar resultados de a pares. |
+| **Aislamiento con `@BeforeEach`** | Reinicializa el estado antes de cada prueba para evitar la contaminación cruzada entre tests (*test pollution*). |
 | **Polimorfismo (Interfaz vs. Implementación)** | Declarar el tipo abstracto a la izquierda (`Map`) y la clase concreta a la derecha (`new HashMap<>()`) para máxima flexibilidad. |
 | **Pico-paréntesis Genéricos `<>`** | Etiqueta de tipo estricta que impide meter objetos incorrectos en colecciones. |
 | **`Optional<T>`** | Caja contenedora segura para evitar errores de referencia nula en búsquedas. |
 | **Patrón Repository (Evans/Fowler/Bob Martin)** | Colección simulada en memoria en la capa de Infraestructura que implementa un Puerto en el Dominio. |
+| **Capa de Servicio de Aplicación (`ProductService`)** | Orquestador de casos de uso que recibe solicitudes de la UI, interactúa con repositorios y coordina operaciones en las entidades de dominio. |
+| **Inyección de Dependencias & Inversión de Dependencias (SOLID - D)** | `ProductService` depende únicamente de la interfaz `ProductRepository`. Esto permite cambiar la persistencia en memoria por base de datos SQL sin modificar una sola línea del servicio. |
 | **Flujo Git Profesional (GitHub Flow)** | Uso de ramas `feat/`, Conventional Commits (`feat:`, `test:`, `docs:`), fusión limpia en `main` y sincronización remota (`git push`). |
 
 ---
 
 ## 📍 6. Punto Exacto de Retorno y Próximos Pasos
 
-El código base actual está 100% verificado, testeado y respaldado en la rama `main` remota.  
+El módulo completo de **Productos** (Entidad `Product`, Contrato `ProductRepository`, Persistencia `InMemoryProductRepository`, Servicio `ProductService` y Suite de Pruebas `ProductServiceTest`) está 100% finalizado, testeado y compilando con 9/9 pruebas pasando.
+
 **Siguientes pasos sugeridos a elegir:**
-1. Diseñar la entidad de dominio **`Sale.java`** (Venta) para registrar transacciones comerciales.
-2. Construir la capa de servicio **`ProductService.java`** (Casos de uso para el catálogo de productos).
-3. Construir la primera versión de la interfaz de consola **`CLI`** para interactuar con los productos.
+1. Construir la primera versión de la interfaz de consola interactiva **`CLI`** (`src/main/java/com/busystem/ui/cli/`) para que el usuario pueda registrar, listar y modificar stock de productos interactivamente.
+2. Diseñar la siguiente entidad de dominio: **`Sale.java`** (Venta) para registrar transacciones comerciales de productos.
