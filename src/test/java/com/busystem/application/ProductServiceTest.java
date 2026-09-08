@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import com.busystem.domain.Product;
+import com.busystem.domain.ProductRepository;
 import com.busystem.infrastructure.InMemoryProductRepository;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
  * ProductServiceTest
  */
 public class ProductServiceTest {
-  private InMemoryProductRepository repository;
+  private ProductRepository repository;
   private ProductService productService;
   
   @BeforeEach
