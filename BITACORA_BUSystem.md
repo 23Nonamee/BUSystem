@@ -107,6 +107,16 @@ BUSystem/
   - Verificación de lanzamiento de `IllegalArgumentException` al buscar IDs inexistentes.
 - **Estado General:** 9 de 9 pruebas pasando en verde (`mvn test` -> `BUILD SUCCESS`, 1.19s).
 
+### ✅ Interfaz de Consola Interactiva (CLI Completa)
+- **`ProductConsoleUI.java`:** `src/main/java/com/busystem/ui/cli/ProductConsoleUI.java`
+  - Métodos de entrada segura resilietes a errores (`readStringInput`, `readIntInput`, `readBigDecimalInput`).
+  - Menú interactivo con operaciones para registrar productos, buscar por ID, listar productos con formato de tabla y ajustar stock.
+  - Captura limpia de excepciones de validación de negocio (`try-catch`).
+- **`MainConsoleUI.java`:** `src/main/java/com/busystem/ui/cli/MainConsoleUI.java`
+  - Menú principal ERP (Front Controller) con enrutamiento modular hacia sub-menús.
+- **`MainApp.java`:** `src/main/java/com/busystem/MainApp.java`
+  - Punto de entrada de la aplicación (*Composition Root*) que conecta la persistencia, servicios y UI.
+
 ---
 
 ## 🧠 5. Conceptos Abordados y Asimilados
@@ -123,22 +133,20 @@ BUSystem/
 | **Patrón AAA (Arrange-Act-Assert)** | Estructura canónica de pruebas unitarias: 1. Preparar datos -> 2. Ejecutar método -> 3. Verificar resultados de a pares. |
 | **Aislamiento con `@BeforeEach`** | Reinicializa el estado antes de cada prueba para evitar la contaminación cruzada entre tests (*test pollution*). |
 | **Polimorfismo (Interfaz vs. Implementación)** | Declarar el tipo abstracto a la izquierda (`Map`) y la clase concreta a la derecha (`new HashMap<>()`) para máxima flexibilidad. |
-| **Pico-paréntesis Genéricos `<>`** | Etiqueta de tipo estricta que impide meter objetos incorrectos en colecciones. |
 | **`Optional<T>`** | Caja contenedora segura para evitar errores de referencia nula en búsquedas. |
 | **Patrón Repository (Evans/Fowler/Bob Martin)** | Colección simulada en memoria en la capa de Infraestructura que implementa un Puerto en el Dominio. |
 | **Capa de Servicio de Aplicación (`ProductService`)** | Orquestador de casos de uso que recibe solicitudes de la UI, interactúa con repositorios y coordina operaciones en las entidades de dominio. |
 | **Inyección de Dependencias & Inversión de Dependencias (SOLID - D)** | `ProductService` depende únicamente de la interfaz `ProductRepository`. Esto permite cambiar la persistencia en memoria por base de datos SQL sin modificar una sola línea del servicio. |
 | **Arquitectura de CLI de Sistema (Fowler / Martin)** | **Clean Architecture (Cap. 22/23):** La UI es la capa externa ("Humble Object"). **PoEAA (Fowler):** Patrón *Front Controller / Application Controller* donde un Menú Principal (`MainConsoleUI`) enruta el control hacia Sub-Presentadores de módulo (`ProductConsoleUI`). |
-| **Punto de Composición (*Composition Root* - Seemann / Martin Cap. 26)** | El método `main` vive en la capa más externa de arranque. Instancia la infraestructura, se la inyecta a los servicios, se la inyecta a la UI y arranca el ciclo. |
+| **Punto de Composición (*Composition Root* - Seemann / Martin Cap. 26)** | El método `main` vive en la capa más externa de arranque (`MainApp`). Instancia la infraestructura, se la inyecta a los servicios, se la inyecta a la UI y arranca el ciclo. |
 | **Flujo Git Profesional (GitHub Flow)** | Uso de ramas `feat/`, Conventional Commits (`feat:`, `test:`, `docs:`), fusión limpia en `main` y sincronización remota (`git push`). |
 
 ---
 
 ## 📍 6. Punto Exacto de Retorno y Próximos Pasos
 
-El módulo completo de **Productos** (Entidad `Product`, Contrato `ProductRepository`, Persistencia `InMemoryProductRepository`, Servicio `ProductService` y Suite de Pruebas `ProductServiceTest`) está 100% finalizado, testeado y compilando con 9/9 pruebas pasando.
+El primer **Vertical Slice** del proyecto BUSystem (Entidad `Product`, Persistencia `InMemoryProductRepository`, Servicio `ProductService`, Suite de Pruebas `ProductServiceTest` y la UI interactiva `MainApp` / `MainConsoleUI` / `ProductConsoleUI`) está 100% completado, testeado (9/9 tests en verde) y ejecutable en vivo.
 
-**Diseño de la CLI Global del Sistema (Basado en Clean Architecture & Fowler PoEAA):**
-1. **`MainApp.java` (Composition Root):** Contiene `public static void main` para inicializar el repositorio, el servicio y arrancar la CLI.
-2. **`MainConsoleUI.java` (Front Controller / Router Principal):** Menú raíz del ERP (`1. Productos`, `2. Ventas`, `0. Salir`).
-3. **`ProductConsoleUI.java` (Sub-Presenter de Productos):** Sub-menú específico con I/O (`Scanner`) para conectar el teclado del usuario con los métodos de `ProductService`.
+**Siguientes pasos sugeridos a elegir para la siguiente sesión:**
+1. Fusionar la rama `feat/ConsoleUI-Product` en `main` y hacer `git push` a remoto.
+2. Comenzar el diseño de la siguiente Entidad de Dominio: **`Sale.java`** (Ventas) y su caso de uso de facturación.
