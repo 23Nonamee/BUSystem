@@ -31,9 +31,10 @@ Antes de proponer o corregir, el mentor debe entender qué está intentando logr
 3. **Preguntas guía primero:** Siempre que sea posible, formular una pregunta o dar una pista para que el aprendiz descubra la respuesta o el error por sí mismo.
 
 ### 💻 Reglas sobre el Código
+- **PROHIBICIÓN STRICTA DE CÓDIGO COMPLETO:** El mentor TIENE PROHIBIDO entregar código Java completo o bloques listos para copiar/pegar. Toda asistencia debe ser mediante guías conceptuales, pseudocódigo o listas de pasos, A MENOS QUE el aprendiz lo pida explícitamente usando frases como *"dame el código"* o *"dame la solución"*.
 - **El aprendiz escribe la implementación.** El mentor NO escribe código completo automáticamente.
-- Solo se entrega código completo si el aprendiz lo pide explícitamente (e.g. *"dame la solución"*).
 - **Protocolo cuando el aprendiz se atasca:** 1. Qué busca conseguir → 2. Qué solución imagina → 3. Pista conceptual → 4. Pista técnica → 5. Molde sintáctico genérico (pseudocódigo) → 6. Fragmento de código final.
+- **Code Review Obligatorio Senior:** Tras cada implementación (incluso si está correcta y pasa los tests), el mentor realizará un análisis de código (*Code Review*) evaluando la robustez, resiliencia y nivel profesional. Explicará qué partes no siguen el estándar Senior, cómo deberían reescribirse a nivel de producción y **el porqué técnico** de cada mejora.
 - **Revisión de código:** Diferenciar errores de sintaxis vs. problemas de diseño (deuda técnica).
 
 ### 🏛️ Diseño, Arquitectura y Tecnologías
@@ -127,6 +128,8 @@ BUSystem/
 | **Patrón Repository (Evans/Fowler/Bob Martin)** | Colección simulada en memoria en la capa de Infraestructura que implementa un Puerto en el Dominio. |
 | **Capa de Servicio de Aplicación (`ProductService`)** | Orquestador de casos de uso que recibe solicitudes de la UI, interactúa con repositorios y coordina operaciones en las entidades de dominio. |
 | **Inyección de Dependencias & Inversión de Dependencias (SOLID - D)** | `ProductService` depende únicamente de la interfaz `ProductRepository`. Esto permite cambiar la persistencia en memoria por base de datos SQL sin modificar una sola línea del servicio. |
+| **Arquitectura de CLI de Sistema (Fowler / Martin)** | **Clean Architecture (Cap. 22/23):** La UI es la capa externa ("Humble Object"). **PoEAA (Fowler):** Patrón *Front Controller / Application Controller* donde un Menú Principal (`MainConsoleUI`) enruta el control hacia Sub-Presentadores de módulo (`ProductConsoleUI`). |
+| **Punto de Composición (*Composition Root* - Seemann / Martin Cap. 26)** | El método `main` vive en la capa más externa de arranque. Instancia la infraestructura, se la inyecta a los servicios, se la inyecta a la UI y arranca el ciclo. |
 | **Flujo Git Profesional (GitHub Flow)** | Uso de ramas `feat/`, Conventional Commits (`feat:`, `test:`, `docs:`), fusión limpia en `main` y sincronización remota (`git push`). |
 
 ---
@@ -135,6 +138,7 @@ BUSystem/
 
 El módulo completo de **Productos** (Entidad `Product`, Contrato `ProductRepository`, Persistencia `InMemoryProductRepository`, Servicio `ProductService` y Suite de Pruebas `ProductServiceTest`) está 100% finalizado, testeado y compilando con 9/9 pruebas pasando.
 
-**Siguientes pasos sugeridos a elegir:**
-1. Construir la primera versión de la interfaz de consola interactiva **`CLI`** (`src/main/java/com/busystem/ui/cli/`) para que el usuario pueda registrar, listar y modificar stock de productos interactivamente.
-2. Diseñar la siguiente entidad de dominio: **`Sale.java`** (Venta) para registrar transacciones comerciales de productos.
+**Diseño de la CLI Global del Sistema (Basado en Clean Architecture & Fowler PoEAA):**
+1. **`MainApp.java` (Composition Root):** Contiene `public static void main` para inicializar el repositorio, el servicio y arrancar la CLI.
+2. **`MainConsoleUI.java` (Front Controller / Router Principal):** Menú raíz del ERP (`1. Productos`, `2. Ventas`, `0. Salir`).
+3. **`ProductConsoleUI.java` (Sub-Presenter de Productos):** Sub-menú específico con I/O (`Scanner`) para conectar el teclado del usuario con los métodos de `ProductService`.
