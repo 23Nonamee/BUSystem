@@ -11,9 +11,9 @@ public class MainConsoleUI {
   private final Scanner scanner;
   private ProductConsoleUI productConsoleUI;
   
-  public MainConsoleUI(Scanner scanner){
+  public MainConsoleUI(ProductConsoleUI productConsoleUI, Scanner scanner){
     this.scanner = scanner;
-
+    this.productConsoleUI = productConsoleUI;
   } 
 
   public void Mainstart(){

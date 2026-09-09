@@ -7,6 +7,7 @@ import com.busystem.domain.Product;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.List;
 
 /**
  * ProductConsoleUI
@@ -80,16 +81,33 @@ public class ProductConsoleUI {
 
       Product p = optionalProductSearch.get();
       System.out.println("\n----------------------------------------------");
-      System.out.printf("ID: %s | Name: %s | Price: %.2f | Stock: %d\n",
-              p.getId(), p.getName(), p.getPrice(), p.getStock());
-      System.out.println("----------------------------------------------");
+      
+      System.out.printf("%-10s %-20s %-10s %-8s\n", "ID", "NAME", "PRICE", "STOCK");
+      System.out.println("--------------------------------------------------");
+      System.out.printf("%-10s %-20s $%-9.2f %-8d\n", 
+          p.getId(), p.getName(), p.getPrice(), p.getStock());
+
     } else {
       System.out.println("⚠️No products find with the ID: " + id );
     }
   }
 
   private void handleListAllProducts(){
-    System.out.println(productService.getAllProducts());
+    System.out.println("\n--- 📋 Product Catalog ---");
+    List<Product> products = productService.getAllProducts();
+
+    if (products.isEmpty()) {
+      System.out.println("ℹ️ No products registered.");
+      return;
+    }
+
+    System.out.printf("%-10s %-20s %-10s %-8s\n", "ID", "NAME", "PRICE", "STOCK");
+    System.out.println("--------------------------------------------------");
+    
+    for (Product p : products) {
+      System.out.printf("%-10s %-20s $%-9.2f %-10d\n", 
+          p.getId(), p.getName(), p.getPrice(), p.getStock());
+    }
   }
 
 
