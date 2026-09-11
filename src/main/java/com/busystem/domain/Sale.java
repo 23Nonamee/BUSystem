@@ -2,21 +2,20 @@ package com.busystem.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Sale {
-    private final List<SaleItem> saleItemList = new ArrayList<>();
+    private  List<SaleItem> saleItemList;
     private final String saleId;
     private final LocalDateTime dateTime;
     private final SaleStatus saleStatus;
 
-    public Sale(String saleId, LocalDateTime dateTime,SaleStatus saleStatus ) {
-        this.saleId = saleId;
-        this.dateTime = dateTime;
-        this.saleStatus = saleStatus;
-
+    public Sale(String saleId, LocalDateTime dateTime,SaleStatus saleStatus, List<SaleItem> saleItemList ) {
+        this.saleId = Objects.requireNonNull(saleId, "SaleID cannot be null");
+        this.dateTime = Objects.requireNonNull(dateTime, "DateTime cannot be null");
+        this.saleStatus = Objects.requireNonNull(saleStatus, "SaleStatus cannot be null");
+        this.saleItemList = Objects.requireNonNull(saleItemList, "Sale itemlist cannot be null");
     }
 
     public List<SaleItem> getSaleItemList() {
