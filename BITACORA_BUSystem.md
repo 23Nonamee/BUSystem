@@ -149,7 +149,7 @@ El primer **Vertical Slice** (Productos) está 100% completado, testeado y fusio
 **Próximos Pasos:**
 1. Crear la suite de pruebas unitarias para el dominio de ventas:
    - [x] **`SaleItemTest.java`** (5 tests pasando: subtotal, getters y excepciones *Fail-Fast*).
-   - `SaleTest.java` (probar `calculateTotal()`, `addItem()`, y estado inicial).
+   - [x] **`SaleTest.java`** (6 tests pasando: `calculateTotal()`, `addItem()`, getters y `@BeforeEach`).
    - `InMemorySaleRepositoryTest.java` (probar `save`, `findSaleById`, y `findAllSale`).
 2. Diseñar el servicio de aplicación **`SaleService.java`** (casos de uso de ventas).
 
@@ -163,8 +163,8 @@ El primer **Vertical Slice** (Productos) está 100% completado, testeado y fusio
   - `SaleItem.java` (Renglón inmutable con validación *Fail-Fast* y cálculo de subtotal).
   - `Sale.java` (Entidad principal con agregación de ítems y cálculo seguro de total).
   - `SaleRepository.java` e `InMemorySaleRepository.java` (Contrato y repositorio simulado O(1) en memoria).
-- **Code Review y Pruebas Unitarias de `SaleItemTest`:** El aprendiz implementó una suite completa de 5 pruebas unitarias para `SaleItem`, cubriendo casos exitosos y validaciones *Fail-Fast* (`assertThrows`).
-- **Verificación Empírica de Compilación y Tests:** Se ejecutó `mvn test` obteniendo `BUILD SUCCESS` (100% de las 14 pruebas unitarias pasando en verde).
+- **Code Review y Pruebas Unitarias de `SaleItemTest` y `SaleTest`:** El aprendiz implementó exitosamente suites unitarias con JUnit 5 utilizando `@BeforeEach` para evitar la contaminación cruzada de tests.
+- **Verificación Empírica de Compilación y Tests:** Se ejecutó `mvn test` obteniendo `BUILD SUCCESS` (100% de las 20 pruebas unitarias pasando en verde).
 
 ### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
 - **Perfil y Estilo del Aprendiz:**
