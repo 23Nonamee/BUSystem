@@ -16,23 +16,23 @@ import com.busystem.domain.ProductRepository;
  */
 public class InMemoryProductRepository implements ProductRepository {
   
-  private Map<String, Product> internalMap = new HashMap<>();
+  private Map<String, Product> productMap = new HashMap<>();
     
   @Override
   public void save(Product product){
-    internalMap.put(product.getId(), product);
+    productMap.put(product.getId(), product);
   }
 
   @Override
-  public Optional<Product> findById(String id){
+  public Optional<Product> findProductById(String id){
 
-    return Optional.ofNullable(internalMap.get(id));
+    return Optional.ofNullable(productMap.get(id));
 
   }
 
   @Override
   public List<Product> findAll(){
-    return new ArrayList<>(internalMap.values());
+    return new ArrayList<>(productMap.values());
       
   }
 

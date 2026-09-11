@@ -32,8 +32,8 @@ public class ProductService {
 //get a product by id   
   public Optional<Product> getProductById(String id){
 
-//  using the findById method to get the product
-    return productRepository.findById(id);  
+//  using the findProductById method to get the product
+    return productRepository.findProductById(id);
   } 
 
 
@@ -49,7 +49,7 @@ public class ProductService {
 
   public void increaseProductStock(String productId, int quantity){
     
-    Product product = productRepository.findById(productId)
+    Product product = productRepository.findProductById(productId)
       .orElseThrow(() -> new IllegalArgumentException("Not found a product with ID: "+productId));
 
       product.increaseStock(quantity);
@@ -57,7 +57,7 @@ public class ProductService {
   }
   public void decreaseProductStock(String productId, int quantity){
     
-    Product product = productRepository.findById(productId)
+    Product product = productRepository.findProductById(productId)
       .orElseThrow(() -> new IllegalArgumentException("Not found a product with ID: "+productId));
 
       product.decreaseStock(quantity);
@@ -65,7 +65,7 @@ public class ProductService {
   }
   public void adjustProductStock(String productId, int quantity){
     
-    Product product = productRepository.findById(productId)
+    Product product = productRepository.findProductById(productId)
       .orElseThrow(() -> new IllegalArgumentException("Not found a product with ID: "+productId));
 
       product.adjustStock(quantity);
