@@ -1,6 +1,6 @@
 # 📒 Bitácora del Proyecto — BUSystem (ERP en Java)
 
-> **Última actualización:** 2026-09-08  
+> **Última actualización:** 2026-09-09  
 > **Propósito:** Guía maestra permanente de contexto, filosofía de trabajo y avance técnico. Sirve como referencia obligatoria para cualquier sesión con el mentor (IA), garantizando continuidad sin perder el enfoque pedagógico ni técnico.
 
 ---
@@ -63,10 +63,10 @@ BUSystem/
         └── java/
             └── com/
                 └── busystem/
-                    ├── domain/          ← Entidades y reglas puras (COMPLETADO: Product.java, ProductRepository.java)
+                    ├── domain/          ← Entidades y reglas puras (COMPLETADO: Product.java, ProductRepository.java; EN PROGRESO: Sale.java, SaleItem.java)
                     ├── service/         ← Casos de uso / orquestación (COMPLETADO: ProductService.java)
                     ├── infrastructure/  ← Base de datos, archivos, drivers (COMPLETADO: InMemoryProductRepository.java)
-                    └── ui/              ← Interfaz de usuario (I/O)
+                    └── ui/              ← Interfaz de usuario (I/O) (COMPLETADO: MainApp, MainConsoleUI, ProductConsoleUI)
 ```
 
 ---
@@ -100,22 +100,13 @@ BUSystem/
 - **`ProductTest.java`:** `src/test/java/com/busystem/domain/ProductTest.java` (2 tests)
 - **`InMemoryProductRepositoryTest.java`:** `src/test/java/com/busystem/domain/InMemoryProductRepositoryTest.java` (3 tests)
 - **`ProductServiceTest.java`:** `src/test/java/com/busystem/application/ProductServiceTest.java` (4 tests)
-  - Pruebas con `@BeforeEach` para aislamiento limpio.
-  - Validación de registro de producto y búsqueda por ID.
-  - Verificación de listado vacío.
-  - Verificación del camino feliz para incremento, descuento y ajuste de stock (`increaseProductStock`, `decreaseProductStock`, `adjustProductStock`).
-  - Verificación de lanzamiento de `IllegalArgumentException` al buscar IDs inexistentes.
 - **Estado General:** 9 de 9 pruebas pasando en verde (`mvn test` -> `BUILD SUCCESS`, 1.19s).
 
-### ✅ Interfaz de Consola Interactiva (CLI Completa)
-- **`ProductConsoleUI.java`:** `src/main/java/com/busystem/ui/cli/ProductConsoleUI.java`
-  - Métodos de entrada segura resilietes a errores (`readStringInput`, `readIntInput`, `readBigDecimalInput`).
-  - Menú interactivo con operaciones para registrar productos, buscar por ID, listar productos con formato de tabla y ajustar stock.
-  - Captura limpia de excepciones de validación de negocio (`try-catch`).
-- **`MainConsoleUI.java`:** `src/main/java/com/busystem/ui/cli/MainConsoleUI.java`
-  - Menú principal ERP (Front Controller) con enrutamiento modular hacia sub-menús.
-- **`MainApp.java`:** `src/main/java/com/busystem/MainApp.java`
-  - Punto de entrada de la aplicación (*Composition Root*) que conecta la persistencia, servicios y UI.
+### ✅ Interfaz de Consola Interactiva (CLI Completa - 1er Vertical Slice 100% Finalizado)
+- **`ProductConsoleUI.java`:** Sub-menú de productos resiliente a errores con formateo de tabla (`printf`) y captura de excepciones.
+- **`MainConsoleUI.java`:** Menú principal del ERP (Front Controller).
+- **`MainApp.java`:** Punto de entrada (*Composition Root*) ejecutable en vivo.
+- **Estado Git:** Fusionado a `main` y sincronizado en el repositorio remoto.
 
 ---
 
@@ -139,14 +130,47 @@ BUSystem/
 | **Inyección de Dependencias & Inversión de Dependencias (SOLID - D)** | `ProductService` depende únicamente de la interfaz `ProductRepository`. Esto permite cambiar la persistencia en memoria por base de datos SQL sin modificar una sola línea del servicio. |
 | **Arquitectura de CLI de Sistema (Fowler / Martin)** | **Clean Architecture (Cap. 22/23):** La UI es la capa externa ("Humble Object"). **PoEAA (Fowler):** Patrón *Front Controller / Application Controller* donde un Menú Principal (`MainConsoleUI`) enruta el control hacia Sub-Presentadores de módulo (`ProductConsoleUI`). |
 | **Punto de Composición (*Composition Root* - Seemann / Martin Cap. 26)** | El método `main` vive en la capa más externa de arranque (`MainApp`). Instancia la infraestructura, se la inyecta a los servicios, se la inyecta a la UI y arranca el ciclo. |
+| **Ciclo de Vida de Estado de Venta (`SaleStatus`)** | Control de estados (`PENDING`, `PAID`, `CANCELLED`). Previene el descuento prematuro de inventario hasta que el pago se confirme exitosamente. |
+| **Modelado de Comprobante / Renglón (`SaleItem`)** | Desacoplamiento de repositorios dentro de la entidad de venta. Representa los productos comprados, cantidades y precios unitarios en un instante determinado. |
 | **Flujo Git Profesional (GitHub Flow)** | Uso de ramas `feat/`, Conventional Commits (`feat:`, `test:`, `docs:`), fusión limpia en `main` y sincronización remota (`git push`). |
 
 ---
 
 ## 📍 6. Punto Exacto de Retorno y Próximos Pasos
 
-El primer **Vertical Slice** del proyecto BUSystem (Entidad `Product`, Persistencia `InMemoryProductRepository`, Servicio `ProductService`, Suite de Pruebas `ProductServiceTest` y la UI interactiva `MainApp` / `MainConsoleUI` / `ProductConsoleUI`) está 100% completado, testeado (9/9 tests en verde) y ejecutable en vivo.
+El primer **Vertical Slice** (Productos) está 100% completado, testeado y fusionado a `main`.
 
-**Siguientes pasos sugeridos a elegir para la siguiente sesión:**
-1. Fusionar la rama `feat/ConsoleUI-Product` en `main` y hacer `git push` a remoto.
-2. Comenzar el diseño de la siguiente Entidad de Dominio: **`Sale.java`** (Ventas) y su caso de uso de facturación.
+**Punto de retorno para el Módulo de Ventas (`Sale`):**
+- [x] Refactorizar **`SaleItem.java`** (validación `quantity > 0`, asignación de `unitPrice`, getters y `getSubTotal()`).
+- [x] Crear el `enum SaleStatus` (`PENDING`, `PAID`, `CANCELLED`) en `com.busystem.domain`.
+- [x] Completar **`Sale.java`** (método `calculateTotal()` acumulativo con `BigDecimal.ZERO` y `addItem()`).
+- [x] Crear la interfaz **`SaleRepository.java`** (`save`, `findSaleById`, `findAllSale`) y la implementación **`InMemorySaleRepository.java`**.
+
+**Próximos Pasos:**
+1. Crear la suite de pruebas unitarias para el dominio de ventas:
+   - [x] **`SaleItemTest.java`** (5 tests pasando: subtotal, getters y excepciones *Fail-Fast*).
+   - `SaleTest.java` (probar `calculateTotal()`, `addItem()`, y estado inicial).
+   - `InMemorySaleRepositoryTest.java` (probar `save`, `findSaleById`, y `findAllSale`).
+2. Diseñar el servicio de aplicación **`SaleService.java`** (casos de uso de ventas).
+
+---
+
+## 📝 7. Registro de Sesión y Aprendizajes del Mentor (2026-09-10)
+
+### 📌 Avances Registrados en esta Sesión
+- **Dominio e Infraestructura del Módulo de Ventas Completados:**
+  - `SaleStatus.java` (Enum con estados `PENDING`, `PAID`, `CANCELLED`).
+  - `SaleItem.java` (Renglón inmutable con validación *Fail-Fast* y cálculo de subtotal).
+  - `Sale.java` (Entidad principal con agregación de ítems y cálculo seguro de total).
+  - `SaleRepository.java` e `InMemorySaleRepository.java` (Contrato y repositorio simulado O(1) en memoria).
+- **Code Review y Pruebas Unitarias de `SaleItemTest`:** El aprendiz implementó una suite completa de 5 pruebas unitarias para `SaleItem`, cubriendo casos exitosos y validaciones *Fail-Fast* (`assertThrows`).
+- **Verificación Empírica de Compilación y Tests:** Se ejecutó `mvn test` obteniendo `BUILD SUCCESS` (100% de las 14 pruebas unitarias pasando en verde).
+
+### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
+- **Perfil y Estilo del Aprendiz:**
+  - **Iniciativa propia:** Le gusta dar el primer paso escribiendo los borradores de las clases antes de pedir ayuda.
+  - **Enfoque práctico con revisión:** Se beneficia de presentar su código preliminar para recibir retroalimentación puntual (*Code Review*) sobre lo que está bien y lo que debe mejorar.
+  - **Claridad conceptual previa:** Requiere entender conceptualmente estructuras avanzadas de Java (como los `enum` vs. `String`) con ejemplos del mundo real antes de aplicarlas en el código.
+  - **Excelente ritmo de refactorización:** Una vez entendido el concepto técnico, aplica las correcciones con total precisión en el código.
+- **Aprendizajes sobre la Arquitectura del Proyecto:**
+  - El módulo `Sale` requiere atención especial en el modelado de inmutabilidad del precio unitario (`unitPrice`) al momento de la venta para evitar que futuros cambios de precio en `Product` alteren el historial de ventas pasadas.
