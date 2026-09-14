@@ -8,7 +8,7 @@ public interface SaleRepository {
 
     void save(Sale sale);
 
-    Optional<Sale> findSaleById(String id);
+    Optional<Sale> findById(String id);
 
-    List<Sale> findAllSale();
+    List<Sale> findAll();
 }

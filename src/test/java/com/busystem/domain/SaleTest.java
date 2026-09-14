@@ -1,5 +1,6 @@
 package com.busystem.domain;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class SaleTest {
         saleItem = new SaleItem(product, 3, price);
 
         saleItemListTest = new ArrayList<>();
-        sale = new Sale(saleId, dateTime, saleStatus, saleItemListTest);
+        sale = Sale.createNewSale(saleId, dateTime, saleItemListTest);
     }
 
     @Test
