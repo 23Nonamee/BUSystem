@@ -1,6 +1,6 @@
 # 📒 Bitácora del Proyecto — BUSystem (ERP en Java)
 
-> **Última actualización:** 2026-09-09  
+> **Última actualización:** 2026-09-14  
 > **Propósito:** Guía maestra permanente de contexto, filosofía de trabajo y avance técnico. Sirve como referencia obligatoria para cualquier sesión con el mentor (IA), garantizando continuidad sin perder el enfoque pedagógico ni técnico.
 
 ---
@@ -137,47 +137,48 @@ BUSystem/
 
 ---
 
-## 📍 6. Punto Exacto de Retorno y Próximos Pasos (Sesión 2026-09-13)
+## 📍 6. Punto Exacto de Retorno y Próximos Pasos (Sesión 2026-09-14)
 
 ### 🚨 Estado de Compilación al Corte de Sesión
-Actualmente `mvn test` pasa con **BUILD SUCCESS (24/24 pruebas en verde)**. Las transiciones `markAsPaid()` y `markAsCancelled()` en `Sale.java` ya validan que la venta esté en estado `PENDING` antes de modificar el estado.
+Actualmente `mvn clean test` pasa con **BUILD SUCCESS (28/28 pruebas en verde)**. Se agregaron y verificaron 4 nuevas pruebas unitarias en `SaleTest.java`.
 
 ---
 
-### 🛠️ Tareas Pendientes Inmediatas:
+### 🛠️ Tareas Pendientes Inmediatas para la Siguiente Sesión:
 
-#### 1. Refactorización Senior en `Sale.java` (Dominio):
+#### 1. Suite de Pruebas y Dominio `Sale.java` (COMPLETADO):
 - [x] **Patrón Static Factory Methods (`createNewSale` vs `reconstituteSale`):**
   - Ocultar/privatizar el constructor directo de `Sale`.
   - Crear `Sale.createNewSale(...)` para nuevas ventas en estado `PENDING`.
   - Crear `Sale.reconstituteSale(...)` para que los repositorios restauren ventas guardadas en la base de datos con cualquier estado sin violar reglas de negocio.
   - Actualizar suites de pruebas para utilizar los métodos estáticos de fábrica.
-- [ ] **Actualizar suite de pruebas `SaleTest.java`:**
-  - Agregar unit tests para comprobar el lanzamiento de `IllegalStateException` al intentar pagar o cancelar una venta que ya no esté en estado `PENDING`.
+- [x] **Actualizar suite de pruebas `SaleTest.java` (28/28 Pruebas en Verde):**
+  - Unit tests para `markAsPaid()` y `markAsCancelled()`.
+  - Unit tests con `assertThrows(IllegalStateException.class)` al intentar modificar ventas que ya no están `PENDING`.
 
-#### 2. Diseño del Caso de Uso en `SaleService.java` (Aplicación):
+#### 2. Diseño del Caso de Uso en `SaleService.java` (Capa de Aplicación):
 - [ ] **Inyección de Repositorios Múltiples:** Inyectar `SaleRepository` y `ProductRepository`.
 - [ ] **Orquestación del Caso de Uso `confirmPayment(String saleId)`:**
-  1. Recuperar la venta desde `SaleRepository`.
+  1. Recuperar la venta desde `SaleRepository` (`findById`).
   2. Ejecutar `sale.markAsPaid()`.
-  3. Recorrer `SaleItem`, descontar el stock de cada `Product` en `ProductRepository`.
-  4. Persistir la venta pagada en `SaleRepository`.
+  3. Recorrer los `SaleItem`, buscar cada `Product` en `ProductRepository`, descontar stock con `product.decreaseStock(quantity)` y persistir el producto.
+  4. Persistir la venta actualizada en `SaleRepository`.
+- [ ] **Suite de Pruebas Unitarias para `SaleServiceTest.java`:**
+  - Probar confirmación de pago y actualización en memoria.
 
 ---
 
-## 📝 7. Registro de Sesión y Aprendizajes del Mentor (2026-09-13)
+## 📝 7. Registro de Sesión y Aprendizajes del Mentor (2026-09-14)
 
 ### 📌 Avances Registrados en esta Sesión
-- **Validación de Máquina de Estados en `Sale.java`:**
-  - El aprendiz implementó de forma independiente las precondiciones con negación booleana (`!(saleStatus == SaleStatus.PENDING)`), logrando pasar los 24 unit tests en verde.
-- **Debate de Seguridad de Dominio y Creación de Objetos:**
-  - El aprendiz descubrió por su cuenta la vulnerabilidad de diseño de exponer un constructor público que reciba `SaleStatus`, razonando que permitiría a usuarios/programadores falsificar ventas en estado `PAID` sin procesar el cobro real.
-  - Se acordó adoptar el estándar de libro más Senior (*Static Factory Methods* con `create` y `reconstitute`) citando fuentes oficiales de DDD.
-- **Actualización de Reglas de Mentoría en Bitácora:**
-  - Se agregó la regla obligatoria para el mentor de acompañar cada recomendación y patrón técnico con referencias explícitas a libros de la industria (Autor, Libro, Capítulo y Páginas/Sección).
+- **Suite de Pruebas Unitarias en `SaleTest.java` (28/28 Éxito):**
+  - El aprendiz escribió de forma autónoma los unit tests para la máquina de estados de `Sale`: `markAsPaid()`, `markAsCancelled()`, `notPendingSaleAsPaid()` y `notPendingSaleAsCancelled()`.
+  - Verificación exitosa de captura de `IllegalStateException` utilizando el asertor `assertThrows` de JUnit 5.
+- **Implementación Completa de Métodos de Fábrica Estáticos:**
+  - Quedó refactorizado el constructor `private` y la instanciación mediante `Sale.createNewSale(...)` e `Sale.reconstituteSale(...)`.
 
 ### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
 - **Perfil y Estilo del Aprendiz:**
-  - Pensamiento crítico avanzado y seguridad por diseño (*Security by Design*). Identifica rápidamente brechas donde una API o constructor expuesto viola reglas del dominio.
-  - Exige máxima rigurosidad y fundamentación de libro (*Estándar de Manual*), requiriendo citas bibliográficas precisas para validar la teoría detrás del código.
+  - Autonomía y rigor en testing: Diseña sus propias pruebas unitarias asegurando cobertura tanto del camino feliz como de las rutas defensivas de excepciones.
+  - Adopción nativa del patrón AAA y aserciones estrictas de JUnit 5.
 

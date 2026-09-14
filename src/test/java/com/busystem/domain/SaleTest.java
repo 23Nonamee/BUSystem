@@ -78,6 +78,49 @@ class SaleTest {
 
     }
 
+    @Test
+    @DisplayName("Mark sale status as paid")
+    void markAsPaid(){
+
+        sale.markAsPaid();
+        assertEquals(SaleStatus.PAID, sale.getSaleStatus());
+        
+
+    }
+
+    @Test
+    @DisplayName("Mark sale status as cancelled")
+    void markAsCancelled(){
+
+        sale.markAsCancelled();
+        assertEquals(SaleStatus.CANCELLED, sale.getSaleStatus());
+        
+
+    }
+    
+    @Test
+    @DisplayName("try to mark a not pending sale as paid")
+    void notPendingSaleAsPaid(){
+      
+      sale.markAsCancelled();
+      
+      assertThrows(IllegalStateException.class,
+                    () ->sale.markAsPaid());
+
+    }
+
+    @Test
+    @DisplayName("try to mark a not pending sale as cancelled")
+    void notPendingSaleAsCancelled(){
+
+      sale.markAsPaid();
+      
+
+      assertThrows(IllegalStateException.class,
+                    ()-> sale.markAsCancelled());
+
+    }
+
 
 }
 
