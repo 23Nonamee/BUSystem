@@ -15,7 +15,7 @@ public class ProductService {
   private final ProductRepository productRepository; // create a variable type ProductRepository empty
   
 //request a real ProductRepository Object
-  public ProductService(ProductRepository productRepository){ 
+  public ProductService(ProductRepository productRepository){
 //  save the real ProductRepository in the box
     this.productRepository = productRepository;    
   }

@@ -36,6 +36,7 @@ Antes de proponer o corregir, el mentor debe entender qué está intentando logr
 - **Protocolo cuando el aprendiz se atasca:** 1. Qué busca conseguir → 2. Qué solución imagina → 3. Pista conceptual → 4. Pista técnica → 5. Molde sintáctico genérico (pseudocódigo) → 6. Fragmento de código final.
 - **Code Review Obligatorio Senior:** Tras cada implementación (incluso si está correcta y pasa los tests), el mentor realizará un análisis de código (*Code Review*) evaluando la robustez, resiliencia y nivel profesional. Explicará qué partes no siguen el estándar Senior, cómo deberían reescribirse a nivel de producción y **el porqué técnico** de cada mejora.
 - **Revisión de código:** Diferenciar errores de sintaxis vs. problemas de diseño (deuda técnica).
+- **Obligación de Citación Bibliográfica (Fuentes Oficiales):** En cada explicación técnica o recomendación de diseño, el mentor DEBE incluir las referencias exactas de libros de literatura canónica (Libro, Autor, Capítulo, Páginas/Secciones) de donde proviene dicho conocimiento o patrón (ej. Eric Evans, Martin Fowler, Robert C. Martin, Vaughn Vernon).
 
 ### 🏛️ Diseño, Arquitectura y Tecnologías
 - **Decisiones fundamentadas:** Ningún patrón entra sin justificación real (YAGNI / KISS).
@@ -136,41 +137,47 @@ BUSystem/
 
 ---
 
-## 📍 6. Punto Exacto de Retorno y Próximos Pasos
+## 📍 6. Punto Exacto de Retorno y Próximos Pasos (Sesión 2026-09-13)
 
-El primer **Vertical Slice** (Productos) está 100% completado, testeado y fusionado a `main`.
-
-**Punto de retorno para el Módulo de Ventas (`Sale`):**
-- [x] Refactorizar **`SaleItem.java`** (validación `quantity > 0`, asignación de `unitPrice`, getters y `getSubTotal()`).
-- [x] Crear el `enum SaleStatus` (`PENDING`, `PAID`, `CANCELLED`) en `com.busystem.domain`.
-- [x] Completar **`Sale.java`** (método `calculateTotal()` acumulativo con `BigDecimal.ZERO` y `addItem()`).
-- [x] Crear la interfaz **`SaleRepository.java`** (`save`, `findSaleById`, `findAllSale`) y la implementación **`InMemorySaleRepository.java`**.
-
-**Próximos Pasos:**
-1. Crear la suite de pruebas unitarias para el dominio de ventas:
-   - [x] **`SaleItemTest.java`** (5 tests pasando: subtotal, getters y excepciones *Fail-Fast*).
-   - [x] **`SaleTest.java`** (6 tests pasando: `calculateTotal()`, `addItem()`, getters y `@BeforeEach`).
-   - `InMemorySaleRepositoryTest.java` (probar `save`, `findSaleById`, y `findAllSale`).
-2. Diseñar el servicio de aplicación **`SaleService.java`** (casos de uso de ventas).
+### 🚨 Estado de Compilación al Corte de Sesión
+Actualmente `mvn test` pasa con **BUILD SUCCESS (24/24 pruebas en verde)**. Las transiciones `markAsPaid()` y `markAsCancelled()` en `Sale.java` ya validan que la venta esté en estado `PENDING` antes de modificar el estado.
 
 ---
 
-## 📝 7. Registro de Sesión y Aprendizajes del Mentor (2026-09-10)
+### 🛠️ Tareas Pendientes Inmediatas:
+
+#### 1. Refactorización Senior en `Sale.java` (Dominio):
+- [x] **Patrón Static Factory Methods (`createNewSale` vs `reconstituteSale`):**
+  - Ocultar/privatizar el constructor directo de `Sale`.
+  - Crear `Sale.createNewSale(...)` para nuevas ventas en estado `PENDING`.
+  - Crear `Sale.reconstituteSale(...)` para que los repositorios restauren ventas guardadas en la base de datos con cualquier estado sin violar reglas de negocio.
+  - Actualizar suites de pruebas para utilizar los métodos estáticos de fábrica.
+- [ ] **Actualizar suite de pruebas `SaleTest.java`:**
+  - Agregar unit tests para comprobar el lanzamiento de `IllegalStateException` al intentar pagar o cancelar una venta que ya no esté en estado `PENDING`.
+
+#### 2. Diseño del Caso de Uso en `SaleService.java` (Aplicación):
+- [ ] **Inyección de Repositorios Múltiples:** Inyectar `SaleRepository` y `ProductRepository`.
+- [ ] **Orquestación del Caso de Uso `confirmPayment(String saleId)`:**
+  1. Recuperar la venta desde `SaleRepository`.
+  2. Ejecutar `sale.markAsPaid()`.
+  3. Recorrer `SaleItem`, descontar el stock de cada `Product` en `ProductRepository`.
+  4. Persistir la venta pagada en `SaleRepository`.
+
+---
+
+## 📝 7. Registro de Sesión y Aprendizajes del Mentor (2026-09-13)
 
 ### 📌 Avances Registrados en esta Sesión
-- **Dominio e Infraestructura del Módulo de Ventas Completados:**
-  - `SaleStatus.java` (Enum con estados `PENDING`, `PAID`, `CANCELLED`).
-  - `SaleItem.java` (Renglón inmutable con validación *Fail-Fast* y cálculo de subtotal).
-  - `Sale.java` (Entidad principal con agregación de ítems y cálculo seguro de total).
-  - `SaleRepository.java` e `InMemorySaleRepository.java` (Contrato y repositorio simulado O(1) en memoria).
-- **Code Review y Pruebas Unitarias de `SaleItemTest` y `SaleTest`:** El aprendiz implementó exitosamente suites unitarias con JUnit 5 utilizando `@BeforeEach` para evitar la contaminación cruzada de tests.
-- **Verificación Empírica de Compilación y Tests:** Se ejecutó `mvn test` obteniendo `BUILD SUCCESS` (100% de las 20 pruebas unitarias pasando en verde).
+- **Validación de Máquina de Estados en `Sale.java`:**
+  - El aprendiz implementó de forma independiente las precondiciones con negación booleana (`!(saleStatus == SaleStatus.PENDING)`), logrando pasar los 24 unit tests en verde.
+- **Debate de Seguridad de Dominio y Creación de Objetos:**
+  - El aprendiz descubrió por su cuenta la vulnerabilidad de diseño de exponer un constructor público que reciba `SaleStatus`, razonando que permitiría a usuarios/programadores falsificar ventas en estado `PAID` sin procesar el cobro real.
+  - Se acordó adoptar el estándar de libro más Senior (*Static Factory Methods* con `create` y `reconstitute`) citando fuentes oficiales de DDD.
+- **Actualización de Reglas de Mentoría en Bitácora:**
+  - Se agregó la regla obligatoria para el mentor de acompañar cada recomendación y patrón técnico con referencias explícitas a libros de la industria (Autor, Libro, Capítulo y Páginas/Sección).
 
 ### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
 - **Perfil y Estilo del Aprendiz:**
-  - **Iniciativa propia:** Le gusta dar el primer paso escribiendo los borradores de las clases antes de pedir ayuda.
-  - **Enfoque práctico con revisión:** Se beneficia de presentar su código preliminar para recibir retroalimentación puntual (*Code Review*) sobre lo que está bien y lo que debe mejorar.
-  - **Claridad conceptual previa:** Requiere entender conceptualmente estructuras avanzadas de Java (como los `enum` vs. `String`) con ejemplos del mundo real antes de aplicarlas en el código.
-  - **Excelente ritmo de refactorización:** Una vez entendido el concepto técnico, aplica las correcciones con total precisión en el código.
-- **Aprendizajes sobre la Arquitectura del Proyecto:**
-  - El módulo `Sale` requiere atención especial en el modelado de inmutabilidad del precio unitario (`unitPrice`) al momento de la venta para evitar que futuros cambios de precio en `Product` alteren el historial de ventas pasadas.
+  - Pensamiento crítico avanzado y seguridad por diseño (*Security by Design*). Identifica rápidamente brechas donde una API o constructor expuesto viola reglas del dominio.
+  - Exige máxima rigurosidad y fundamentación de libro (*Estándar de Manual*), requiriendo citas bibliográficas precisas para validar la teoría detrás del código.
+
