@@ -157,14 +157,16 @@ Actualmente `mvn clean test` pasa con **BUILD SUCCESS (28/28 pruebas en verde)**
   - Unit tests con `assertThrows(IllegalStateException.class)` al intentar modificar ventas que ya no están `PENDING`.
 
 #### 2. Diseño del Caso de Uso en `SaleService.java` (Capa de Aplicación):
-- [ ] **Inyección de Repositorios Múltiples:** Inyectar `SaleRepository` y `ProductRepository`.
-- [ ] **Orquestación del Caso de Uso `confirmPayment(String saleId)`:**
+- [x] **Inyección de Repositorios Múltiples:** Inyectar `SaleRepository` y `ProductRepository`.
+- [ ] **Orquestación del Caso de Uso `discountProductStockPaidSale(String saleId)`:**
   1. Recuperar la venta desde `SaleRepository` (`findById`).
-  2. Ejecutar `sale.markAsPaid()`.
+  2. Validar que la venta esté en estado `PENDING` (precondición *Fail-Fast*).
   3. Recorrer los `SaleItem`, buscar cada `Product` en `ProductRepository`, descontar stock con `product.decreaseStock(quantity)` y persistir el producto.
-  4. Persistir la venta actualizada en `SaleRepository`.
+  4. Persistir la venta en `SaleRepository` (sin cambiar el estado — responsabilidad del Módulo de Pagos).
 - [ ] **Suite de Pruebas Unitarias para `SaleServiceTest.java`:**
-  - Probar confirmación de pago y actualización en memoria.
+  - Probar que `discountProductStockPaidSale()` descuenta el stock correctamente.
+  - Probar que lanza `IllegalStateException` si la venta no está `PENDING`.
+  - Probar que lanza `NoSuchElementException` si el ID de la venta no existe.
 
 ---
 
@@ -182,3 +184,91 @@ Actualmente `mvn clean test` pasa con **BUILD SUCCESS (28/28 pruebas en verde)**
   - Autonomía y rigor en testing: Diseña sus propias pruebas unitarias asegurando cobertura tanto del camino feliz como de las rutas defensivas de excepciones.
   - Adopción nativa del patrón AAA y aserciones estrictas de JUnit 5.
 
+---
+
+## 📍 8. Punto Exacto de Retorno y Próximos Pasos (Sesión 2026-09-15)
+
+### 🚨 Estado de Compilación al Corte de Sesión
+`mvn clean test-compile` reporta **1 error de compilación en `SaleService.java` (línea 51):** se escribió `for each` con espacio (sintaxis inválida en Java). La sintaxis correcta del bucle for-each en Java es `for (SaleItem item : lista)` sin la palabra `each`.
+
+---
+
+### 💡 Decisión de Arquitectura Importante Tomada en Esta Sesión
+El aprendiz decidió conscientemente **NO invocar `sale.markAsPaid()` dentro de `SaleService.discountProductStockPaidSale()`**, argumentando que el cambio de estado debería ser responsabilidad exclusiva del **Módulo de Pagos** (una capa/servicio externo). Esta decisión refleja el principio de **Separación de Responsabilidades (SRP)**:
+- `SaleService`: Verifica el estado `PENDING` y descuenta el stock de los productos vendidos.
+- **Módulo de Pagos (futuro):** Invoca `sale.markAsPaid()` al confirmar el cobro real.
+
+> 📚 **Cita Bibliográfica:**
+> *Clean Architecture (2017)* — **Robert C. Martin**, **Capítulo 8:** *"The Single Responsibility Principle"* (**Pág. 62**): *"Un módulo debe tener una, y solo una, razón para cambiar"*.
+
+---
+
+### 🛠️ Tareas Pendientes para la Siguiente Sesión:
+
+#### 1. Corrección en `SaleService.java`:
+- [ ] **Corregir error de sintaxis (línea 51):** Cambiar `for each (SaleItem item : ...)` por `for (SaleItem item : ...)`.
+- [ ] **Completar el cuerpo del bucle `for`:**
+  - Llamar a `productInInventory.decreaseStock(purchasedQuantity)`.
+  - Llamar a `productRepository.save(productInInventory)`.
+- [ ] **Persistir la venta sin cambiar estado:** Llamar a `saleRepository.save(sale)` al final.
+
+#### 2. Suite de Pruebas `SaleServiceTest.java`:
+- [ ] Diseñar y escribir pruebas unitarias para `SaleService` usando implementaciones en memoria.
+
+---
+
+## 📝 9. Registro de Sesión y Aprendizajes del Mentor (2026-09-15)
+
+### 📌 Avances Registrados en esta Sesión
+- **Inicio de Implementación de `SaleService.java`:**
+  - El aprendiz inyectó `ProductRepository` correctamente en el constructor de `SaleService`.
+  - Implementó la búsqueda con `orElseThrow(NoSuchElementException)` para validación *Fail-Fast*.
+  - Implementó la precondición de estado `PENDING` antes del descuento de stock.
+  - Inició el bucle `for-each` para recorrer `SaleItem` e identificar `productId` y `purchasedQuantity`.
+- **Decisión Arquitectónica Autónoma:**
+  - El aprendiz separó la responsabilidad del cambio de estado (`markAsPaid`) del descuento de inventario, delegando el cambio de estado al futuro módulo de pagos.
+
+### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
+- **Perfil y Estilo del Aprendiz:**
+  - Pensamiento arquitectónico proactivo: Cuestiona y decide qué responsabilidad pertenece a cada módulo antes de escribir código.
+  - Error técnico menor identificado: Confusión entre pseudocódigo (`for each`) y sintaxis Java real (`for`). Para corregir al inicio de la siguiente sesión.
+
+---
+
+## 📍 10. Punto Exacto de Retorno y Próximos Pasos (Sesión 2026-09-17)
+
+### 🚨 Estado de Compilación al Corte de Sesión
+`mvn clean test` pasa con **BUILD SUCCESS (31/31 pruebas en verde)**. Se agregaron exitosamente las pruebas unitarias del servicio de ventas y se refactorizó la entidad de ítem de venta bajo estándares estrictos de DDD.
+
+---
+
+### 💡 Decisión de Arquitectura Importante Tomada en Esta Sesión
+El aprendiz demostró un razonamiento de dominio muy avanzado al defender que el precio de venta de un renglón (`SaleItem`) NO debe inyectarse públicamente desde fuera, ya que la única fuente de verdad es la entidad `Product`. 
+Se implementó el patrón de **Factory Methods Estáticos** en `SaleItem` para separar la creación (donde rige la invariante de capturar `product.getPrice()`) de la reconstitución de persistencia (donde se respeta el `historicalPrice` de la base de datos).
+
+> 📚 **Citas Bibliográficas:**
+> *Domain-Driven Design (2003)* — **Eric Evans**, **Capítulo 6 (Factories and Invariants)**: *"Un constructor o fábrica debe garantizar que las invariantes de dominio se cumplan automáticamente sin depender del cliente externo."*
+> *Implementing Domain-Driven Design* — **Vaughn Vernon**, **Capítulo 6**: *"Separar la creación de una nueva entidad de la reconstitución de una entidad existente es vital."*
+
+---
+
+### 🛠️ Tareas Completadas:
+- [x] **Refactorización de `SaleItem.java` (DDD):** Ocultamiento de constructor y creación de `createNewSaleItem` y `reconstituteNewSaleItem`.
+- [x] **Corrección en `SaleService.java`:** Sintaxis del bucle `for` corregida y guardado de entidades completado.
+- [x] **Suite de Pruebas `SaleServiceTest.java`:** Pruebas completadas para `discountProductStockPaidSale`, manejando validación de stock y excepciones de estado.
+
+### 🛠️ Tareas Pendientes Inmediatas para la Siguiente Sesión:
+- [ ] Iniciar el desarrollo del **Módulo de Pagos (Payment Module)** para integrar el cambio de estado de la venta.
+- [ ] Desarrollar la CLI interactiva (`SaleConsoleUI.java`) para el módulo de ventas (Vertical Slice 2).
+
+---
+
+## 📝 11. Registro de Sesión y Aprendizajes del Mentor (2026-09-17)
+
+### 📌 Avances Registrados en esta Sesión
+- El aprendiz defendió y aplicó reglas de dominio (DDD) para blindar el precio de venta en `SaleItem`.
+- Se solucionaron errores conceptuales al testear clases con tipos `Optional<T>`.
+- Suite de pruebas de `SaleServiceTest` culminada y ejecutándose de manera impecable (31/31).
+
+### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
+- **Perfil del Aprendiz:** Posee un excelente instinto para la arquitectura de software. Es capaz de identificar cuándo una recomendación técnica no cuadra con la lógica de negocio y defender la inmutabilidad y autoridad del dominio (DDD).

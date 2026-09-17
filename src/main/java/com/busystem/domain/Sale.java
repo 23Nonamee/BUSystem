@@ -41,6 +41,7 @@ public class Sale {
     public String getSaleId(){
             return saleId;
     }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }

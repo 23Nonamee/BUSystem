@@ -45,7 +45,7 @@ public class ProductServiceTest {
   } 
  
   @Test
-  @DisplayName("List al products")
+  @DisplayName("List all products")
   void allProductListing(){
     
       assertTrue(productService.getAllProducts().isEmpty());
@@ -67,19 +67,18 @@ public class ProductServiceTest {
       Product productResult = productService.getProductById(id).orElseThrow(); // Get the product values
  
 
-//    TEST increase stock
       productService.increaseProductStock(id, 10);
 
       assertEquals(20, productResult.getStock());
 
 
-//    TEST Decrease stock
+
       productService.decreaseProductStock(id, 10);
 
       assertEquals(10, productResult.getStock());
 
 
-//    TEST adjust stock
+
       productService.adjustProductStock(id, 30);
 
       assertEquals(30, productResult.getStock());
