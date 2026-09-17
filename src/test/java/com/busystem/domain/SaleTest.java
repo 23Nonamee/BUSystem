@@ -29,7 +29,7 @@ class SaleTest {
         price = new BigDecimal("999.99");
 
         Product product = new Product("Laptop", "P-101", price, 3);
-        saleItem = new SaleItem(product, 3, price);
+        saleItem = SaleItem.createNewSaleItem(product, 3);
 
         saleItemListTest = new ArrayList<>();
         sale = Sale.createNewSale(saleId, dateTime, saleItemListTest);

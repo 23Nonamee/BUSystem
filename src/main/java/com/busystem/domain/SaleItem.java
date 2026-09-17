@@ -9,9 +9,9 @@ public class SaleItem {
     private final int quantity;
     private final BigDecimal unitPrice;
 
-    public SaleItem(Product product, int quantity, BigDecimal unitPrice) {
+    private SaleItem(Product product, int quantity, BigDecimal price) {
         this.product = Objects.requireNonNull(product,"Product cannot be null");
-        this.unitPrice = Objects.requireNonNull(unitPrice, "Unit price cannot be null");
+        this.unitPrice = Objects.requireNonNull(price, "Unit price cannot be null");
 
         if (unitPrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Unit price must be greater than zero");
@@ -24,6 +24,25 @@ public class SaleItem {
         }
 
     }
+
+    public static SaleItem createNewSaleItem(Product product, int quantity){
+
+        return new SaleItem(product, quantity, product.getPrice());
+
+    }
+
+    public static SaleItem reconstituteNewSaleItem(Product product, int quantity, BigDecimal historicalPrice){
+
+        return new SaleItem(product, quantity, historicalPrice);
+
+    }
+
+
+    public Product getProduct (){
+        return product;
+
+    }
+
 
     public BigDecimal getUnitPrice() {
         return unitPrice;

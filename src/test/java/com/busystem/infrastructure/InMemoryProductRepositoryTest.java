@@ -32,7 +32,7 @@ public class InMemoryProductRepositoryTest {
 
     repository.save(p);
     
-    Optional<Product> result = repository.findProductById(id);
+    Optional<Product> result = repository.findById(id);
       
       assertTrue(result.isPresent());
       assertEquals(p, result.get());    
@@ -46,7 +46,7 @@ public class InMemoryProductRepositoryTest {
 
     String id = "P-999";
 
-    Optional<Product> result = repository.findProductById(id);
+    Optional<Product> result = repository.findById(id);
       
       assertFalse(result.isPresent());
    

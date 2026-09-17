@@ -12,7 +12,7 @@ class SaleItemTest {
 
     Product product = new Product(name, id, price, stock);
 
-    SaleItem saleItem = new SaleItem(product, 3, price);
+    SaleItem saleItem = SaleItem.createNewSaleItem(product, 3);
 
     @Test
     @DisplayName("Get quantity")
@@ -47,24 +47,11 @@ class SaleItemTest {
         int zeroQuantity = 0;
 
         assertThrows(IllegalArgumentException.class,
-                () -> new SaleItem(product, negativeQuantity, price));
+                () -> SaleItem.createNewSaleItem(product, negativeQuantity));
 
         assertThrows(IllegalArgumentException.class,
-                () -> new SaleItem(product, zeroQuantity, price));
+                () -> SaleItem.createNewSaleItem(product, zeroQuantity));
 
     }
 
-    @Test
-    @DisplayName("Bad way: create a SaleItem with a price negative or zero")
-    void badPriceSaleItemCreate() {
-        BigDecimal negativePrice = new BigDecimal("-999.99");
-        BigDecimal zeroPrice = BigDecimal.ZERO;
-
-        assertThrows(IllegalArgumentException.class,
-                () -> new SaleItem(product, 3 , negativePrice));
-
-        assertThrows(IllegalArgumentException.class,
-                () -> new SaleItem(product, 3 , zeroPrice));
-
-    }
 }
