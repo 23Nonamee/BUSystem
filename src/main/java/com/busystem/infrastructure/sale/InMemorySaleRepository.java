@@ -1,7 +1,7 @@
-package com.busystem.infrastructure;
+package com.busystem.infrastructure.sale;
 
-import com.busystem.domain.Sale;
-import com.busystem.domain.SaleRepository;
+import com.busystem.domain.sale.Sale;
+import com.busystem.domain.sale.SaleRepository;
 
 import java.util.ArrayList;
 import java.util.List;

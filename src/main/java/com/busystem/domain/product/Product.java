@@ -1,4 +1,4 @@
-package com.busystem.domain;
+package com.busystem.domain.product;
 
 import java.math.BigDecimal;
 import java.util.Objects;

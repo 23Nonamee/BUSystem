@@ -1,13 +1,13 @@
-package com.busystem.application;
+package com.busystem.application.product;
 
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import com.busystem.domain.Product;
-import com.busystem.domain.ProductRepository;
-import com.busystem.infrastructure.InMemoryProductRepository;
+import com.busystem.domain.product.Product;
+import com.busystem.domain.product.ProductRepository;
+import com.busystem.infrastructure.product.InMemoryProductRepository;
 
 import java.math.BigDecimal;
 

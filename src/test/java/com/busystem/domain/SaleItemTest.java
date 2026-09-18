@@ -1,5 +1,11 @@
 package com.busystem.domain;
 
+import com.busystem.domain.sale.SaleItem;
+
+import com.busystem.domain.sale.Sale;
+
+import com.busystem.domain.product.Product;
+
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;

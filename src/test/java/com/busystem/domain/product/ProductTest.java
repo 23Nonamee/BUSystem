@@ -1,5 +1,5 @@
 //packages
-package com.busystem.domain;
+package com.busystem.domain.product;
 
 //libraries
 import org.junit.jupiter.api.Test;

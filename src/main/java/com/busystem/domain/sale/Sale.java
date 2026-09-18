@@ -1,4 +1,8 @@
-package com.busystem.domain;
+package com.busystem.domain.sale;
+
+import com.busystem.domain.sale.SaleStatus;
+
+import com.busystem.domain.sale.SaleItem;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
