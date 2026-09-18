@@ -1,4 +1,5 @@
-package com.busystem.domain;
+package com.busystem.domain.sale;
+import com.busystem.domain.product.Product;
 
 import com.busystem.domain.sale.SaleItem;
 
