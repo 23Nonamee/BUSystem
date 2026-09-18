@@ -1,5 +1,5 @@
 //Packages
-package com.busystem.domain;
+package com.busystem.domain.product;
 
 //Libraries
 import java.util.List;

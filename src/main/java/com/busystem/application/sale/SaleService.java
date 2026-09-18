@@ -1,11 +1,11 @@
-package com.busystem.application;
+package com.busystem.application.sale;
 
-import com.busystem.domain.Sale;
-import com.busystem.domain.SaleRepository;
-import com.busystem.domain.SaleStatus;
-import com.busystem.domain.SaleItem;
-import com.busystem.domain.Product;
-import com.busystem.domain.ProductRepository;
+import com.busystem.domain.sale.Sale;
+import com.busystem.domain.sale.SaleRepository;
+import com.busystem.domain.sale.SaleStatus;
+import com.busystem.domain.sale.SaleItem;
+import com.busystem.domain.product.Product;
+import com.busystem.domain.product.ProductRepository;
 
 
 import java.util.List;

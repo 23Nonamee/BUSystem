@@ -1,7 +1,7 @@
 package com.busystem.ui.cli;
 
-import com.busystem.application.ProductService;
-import com.busystem.domain.Product;
+import com.busystem.application.product.ProductService;
+import com.busystem.domain.product.Product;
 
 
 import java.math.BigDecimal;

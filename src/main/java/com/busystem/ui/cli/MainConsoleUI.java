@@ -1,5 +1,7 @@
 package com.busystem.ui.cli;
 
+import com.busystem.domain.product.Product;
+
 import java.util.Scanner;
 
 

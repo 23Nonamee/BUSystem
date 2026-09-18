@@ -1,5 +1,5 @@
 //packages
-package com.busystem.infrastructure;
+package com.busystem.infrastructure.product;
 
 //libraries
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.List;
 
-import com.busystem.domain.Product;
+import com.busystem.domain.product.Product;
 
 
 /**

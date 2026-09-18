@@ -1,5 +1,5 @@
 // Packages
-package com.busystem.infrastructure;
+package com.busystem.infrastructure.product;
 
 import java.util.ArrayList;
 // Libraries
@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
-import com.busystem.domain.Product;
-import com.busystem.domain.ProductRepository;
+import com.busystem.domain.product.Product;
+import com.busystem.domain.product.ProductRepository;
 
 /**
  * InMemoryProductRepository

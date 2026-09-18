@@ -272,3 +272,34 @@ Se implementó el patrón de **Factory Methods Estáticos** en `SaleItem` para s
 
 ### 🧠 Aprendizajes del Mentor sobre el Aprendiz y el Proyecto
 - **Perfil del Aprendiz:** Posee un excelente instinto para la arquitectura de software. Es capaz de identificar cuándo una recomendación técnica no cuadra con la lógica de negocio y defender la inmutabilidad y autoridad del dominio (DDD).
+
+---
+
+## 📍 12. Diseño Arquitectónico Acordado: Módulo de Pagos (Payment Module)
+
+### 💡 Decisión Arquitectónica: Separación de Contextos (Bounded Contexts)
+El aprendiz realizó una excelente corrección arquitectónica: **La entidad `Sale` no debe conocer ni manejar lógicas de pago (como validar montos o interactuar con pasarelas)**. La responsabilidad de `Sale` es gestionar los ítems vendidos y su propio ciclo de vida (`PENDING`, `PAID`, `CANCELLED`). 
+
+Todo lo relacionado con el cobro, validación de montos y comunicación con pasarelas externas (agentes de pago) pertenecerá exclusivamente al **Módulo de Pagos**. 
+
+**1. Entidad `Sale` (Dominio de Ventas):**
+Se mantendrá agnóstica a los pagos. Mantendrá sus métodos de cambio de estado (ej. `markAsPaid()`), pero la validación de si el pago fue exitoso, si el monto alcanzó, o si la tarjeta fue declinada, NO sucederá aquí.
+
+**2. Integración Externa (Puerto y Adaptador en Módulo de Pagos):**
+- **Puerto:** Se creará una interfaz `PaymentGateway` para los agentes externos.
+- **Adaptador:** Se creará un `FakePaymentGateway` para pruebas, simulando respuestas de aprobación o rechazo externo.
+
+**3. Orquestación del Servicio (`PaymentService`):**
+El `PaymentService` coordinará todo el flujo asumiendo la responsabilidad del proceso:
+1. Recibe la solicitud de pago (ej. `saleId`, monto, método de pago).
+2. Consulta la pasarela externa: `paymentGateway.processPayment(...)`.
+3. Si la pasarela aprueba y el monto es validado correctamente por el Módulo de Pagos:
+   - Se recupera la venta y se actualiza su estado (`sale.markAsPaid()`).
+   - Se persiste el cambio de estado en la base de datos (`saleRepository.save(sale)`).
+   - Se invoca a `saleService.discountProductStockPaidSale(saleId)` para realizar el descuento de inventario.
+
+### 🛠️ Próximos Pasos (Hoja de Ruta para la siguiente sesión):
+- [ ] Crear la interfaz `PaymentGateway.java` y su implementación simulada `FakePaymentGateway.java` en el módulo de pagos.
+- [ ] Crear el orquestador `PaymentService.java` y aplicar TDD en `PaymentServiceTest.java`.
+- [ ] Implementar la lógica en `PaymentService` para que valide el pago, marque la venta como pagada, y llame a `SaleService.discountProductStockPaidSale`.
+

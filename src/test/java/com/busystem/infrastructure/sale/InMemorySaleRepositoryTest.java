@@ -1,5 +1,7 @@
 //packages
-package com.busystem.infrastructure;
+package com.busystem.infrastructure.sale;
+
+import com.busystem.domain.sale.SaleRepository;
 
 //libraries
 import org.junit.jupiter.api.Test;
@@ -11,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.busystem.domain.Sale;
-import com.busystem.domain.SaleItem;
-import com.busystem.domain.SaleStatus;
+import com.busystem.domain.sale.Sale;
+import com.busystem.domain.sale.SaleItem;
+import com.busystem.domain.sale.SaleStatus;
 
 
 /**

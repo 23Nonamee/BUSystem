@@ -1,10 +1,10 @@
-package com.busystem.application;
+package com.busystem.application.product;
 
 
 import java.util.List;
 import java.util.Optional;
-import com.busystem.domain.Product;
-import com.busystem.domain.ProductRepository;
+import com.busystem.domain.product.Product;
+import com.busystem.domain.product.ProductRepository;
 
 
 /**

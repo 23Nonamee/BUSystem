@@ -1,10 +1,12 @@
 package com.busystem;
 
+import com.busystem.domain.product.Product;
+
 import com.busystem.ui.cli.ProductConsoleUI;
 import com.busystem.ui.cli.MainConsoleUI;
-import com.busystem.application.ProductService;
-import com.busystem.domain.ProductRepository;
-import com.busystem.infrastructure.InMemoryProductRepository;
+import com.busystem.application.product.ProductService;
+import com.busystem.domain.product.ProductRepository;
+import com.busystem.infrastructure.product.InMemoryProductRepository;
 
 import java.util.Scanner;
 
