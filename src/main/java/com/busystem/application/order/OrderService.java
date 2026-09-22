@@ -1,9 +1,9 @@
 package com.busystem.application.sale;
 
-import com.busystem.domain.sale.Sale;
-import com.busystem.domain.sale.SaleRepository;
-import com.busystem.domain.sale.SaleStatus;
-import com.busystem.domain.sale.SaleItem;
+import com.busystem.domain.order.Order;
+import com.busystem.domain.order.SaleRepository;
+import com.busystem.domain.order.OrderStatus;
+import com.busystem.domain.order.OrderItem;
 import com.busystem.domain.product.Product;
 import com.busystem.domain.product.ProductRepository;
 
@@ -22,33 +22,33 @@ public class SaleService {
         this.productRepository = productRepository;
     }
 
-    public void saveSale(Sale sale){
+    public void saveSale(Order sale){
         Objects.requireNonNull(sale);
         saleRepository.save(sale);
     }
 
-    public Optional<Sale> getSaleByID(String id){
+    public Optional<Order> getSaleByID(String id){
 
 
         return saleRepository.findById(id);
     }
 
-    public List<Sale> getAllSales(){
+    public List<Order> getAllSales(){
 
         return saleRepository.findAll();
     }
     
     public void discountProductStockPaidSale(String saleId){
 
-        Sale sale = saleRepository.findById(saleId).orElseThrow(
+        Order sale = saleRepository.findById(saleId).orElseThrow(
                                                   () -> new NoSuchElementException("No sale found with ID: " + saleId));
         
-        if (sale.getSaleStatus() != SaleStatus.PAID){
+        if (sale.getOrderStatus() != OrderStatus.PAID){
             throw new IllegalStateException("Status is not pending. The stock cannot be modify.");
 
         }
         
-        for (SaleItem item : sale.getSaleItemList()){
+        for (OrderItem item : sale.getOrderItemList()){
 
           String productId = item.getProduct().getId();
           int purchasedQuantity = item.getQuantity();

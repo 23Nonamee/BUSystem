@@ -1,6 +1,4 @@
-package com.busystem.domain.sale;
-
-import com.busystem.domain.sale.Sale;
+package com.busystem.domain.order;
 
 
 public enum SaleStatus{

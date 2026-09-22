@@ -1,7 +1,7 @@
 package com.busystem.infrastructure.sale;
 
-import com.busystem.domain.sale.Sale;
-import com.busystem.domain.sale.SaleRepository;
+import com.busystem.domain.order.Order;
+import com.busystem.domain.order.SaleRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InMemorySaleRepository implements SaleRepository {
-    private final Map<String, Sale> saleMap = new HashMap<>();
+    private final Map<String, Order> saleMap = new HashMap<>();
 
 
     @Override
-    public void save(Sale sale) {
+    public void save(Order sale) {
         Objects.requireNonNull(sale, "Sale cannot be null");
-        saleMap.put(sale.getSaleId(),sale);
+        saleMap.put(sale.getOrderId(),sale);
     }
 
     @Override
-    public Optional<Sale> findById(String id) {
+    public Optional<Order> findById(String id) {
         return Optional.ofNullable(saleMap.get(id));
     }
 
     @Override
-    public List<Sale> findAll(){
+    public List<Order> findAll(){
         return new ArrayList<>(saleMap.values());
     }
 

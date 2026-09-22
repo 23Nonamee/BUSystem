@@ -1,8 +1,6 @@
 //packages
 package com.busystem.infrastructure.sale;
 
-import com.busystem.domain.sale.SaleRepository;
-
 //libraries
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -13,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.busystem.domain.sale.Sale;
-import com.busystem.domain.sale.SaleItem;
-import com.busystem.domain.sale.SaleStatus;
+import com.busystem.domain.order.Order;
+import com.busystem.domain.order.OrderItem;
+import com.busystem.domain.order.OrderStatus;
 
 
 /**
@@ -30,14 +28,14 @@ public class InMemorySaleRepositoryTest {
 
     String saleId = "SUC1-001";
     LocalDateTime dateTime = LocalDateTime.now();
-    SaleStatus saleStatus = SaleStatus.PENDING;
-    List<SaleItem> items = new ArrayList<>();
+    OrderStatus orderStatus = OrderStatus.PENDING;
+    List<OrderItem> items = new ArrayList<>();
 
-    Sale sale = Sale.reconstituteSale(saleId, dateTime, saleStatus , items);
+    Order sale = Order.reconstituteSale(saleId, dateTime, orderStatus, items);
 
     repository.save(sale);
 
-    Optional<Sale> result = repository.findById(saleId);
+    Optional<Order> result = repository.findById(saleId);
 
     assertTrue(result.isPresent());
     assertEquals(sale, result.get());
@@ -49,7 +47,7 @@ public class InMemorySaleRepositoryTest {
 
     String saleId = "SUC1-999";
 
-    Optional<Sale> result = repository.findById(saleId);
+    Optional<Order> result = repository.findById(saleId);
 
     assertFalse(result.isPresent());
   }
@@ -58,7 +56,7 @@ public class InMemorySaleRepositoryTest {
   @DisplayName("Listing Sales")
   void Listing(){
 
-    List<Sale> sales = repository.findAll();
+    List<Order> sales = repository.findAll();
 
     assertTrue(sales.isEmpty());
   }

@@ -1,22 +1,19 @@
 package com.busystem.application.sale;
 
 
-import com.busystem.domain.sale.Sale;
-import com.busystem.domain.sale.SaleRepository;
-import com.busystem.domain.sale.SaleStatus;
+import com.busystem.domain.order.Order;
+import com.busystem.domain.order.SaleRepository;
 import com.busystem.infrastructure.product.InMemoryProductRepository;
 import com.busystem.infrastructure.sale.InMemorySaleRepository;
 
 
-import com.busystem.domain.sale.SaleItem;
+import com.busystem.domain.order.OrderItem;
 import com.busystem.domain.product.Product;
 import com.busystem.domain.product.ProductRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ArrayList;
 
@@ -35,8 +32,8 @@ public class SaleServiceTest {
     private SaleService saleService;
     private SaleRepository saleRepository;
     private ProductRepository productRepository;
-    private static Sale sale;
-    private List<SaleItem> saleItemListTest;
+    private static Order sale;
+    private List<OrderItem> orderItemListTest;
     private Product product;
    
 
@@ -54,8 +51,8 @@ public class SaleServiceTest {
         productRepository.save(product);
 
 
-        saleItemListTest = new ArrayList<>();
-        sale = Sale.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), saleItemListTest);
+        orderItemListTest = new ArrayList<>();
+        sale = Order.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
 
 
         
@@ -69,7 +66,7 @@ public class SaleServiceTest {
       
       saleService.saveSale(sale);
 
-      Optional<Sale> findSavedSale = saleService.getSaleByID("SUC1-26-09-11-00001");
+      Optional<Order> findSavedSale = saleService.getSaleByID("SUC1-26-09-11-00001");
 
       assertEquals(sale,findSavedSale.orElseThrow());
 
@@ -83,7 +80,7 @@ public class SaleServiceTest {
       
       saleService.saveSale(sale);
       
-      List<Sale> findSavedSale = saleService.getAllSales();
+      List<Order> findSavedSale = saleService.getAllSales();
 
       assertEquals(1, findSavedSale.size());
       assertEquals(sale, findSavedSale.get(0));
@@ -93,12 +90,12 @@ public class SaleServiceTest {
     @DisplayName("Discounting stock of a paid sale")
     void discountStockPaidSaleTest(){
       
-      SaleItem saleItem = SaleItem.createNewSaleItem(product, 2);
-      saleItemListTest = new ArrayList<>();
+      OrderItem orderItem = OrderItem.createNewOrderItem(product, 2);
+      orderItemListTest = new ArrayList<>();
       
       
-      sale = Sale.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), saleItemListTest);
-      sale.addItem(saleItem);  
+      sale = Order.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
+      sale.addItem(orderItem);
       
       saleService.saveSale(sale);
       sale.markAsPaid();
@@ -112,12 +109,12 @@ public class SaleServiceTest {
     @DisplayName("Discounting stock of a paid sale")
     void discountStockPendingSaleTest(){
       
-      SaleItem saleItem = SaleItem.createNewSaleItem(product, 2);
-      saleItemListTest = new ArrayList<>();
+      OrderItem orderItem = OrderItem.createNewOrderItem(product, 2);
+      orderItemListTest = new ArrayList<>();
       
       
-      sale = Sale.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), saleItemListTest);
-      sale.addItem(saleItem);  
+      sale = Order.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
+      sale.addItem(orderItem);
       
       saleService.saveSale(sale);
       
