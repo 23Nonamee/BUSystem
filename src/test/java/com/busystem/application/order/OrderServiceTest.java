@@ -1,10 +1,10 @@
-package com.busystem.application.sale;
+package com.busystem.application.order;
 
 
 import com.busystem.domain.order.Order;
-import com.busystem.domain.order.SaleRepository;
+import com.busystem.domain.order.OrderRepository;
 import com.busystem.infrastructure.product.InMemoryProductRepository;
-import com.busystem.infrastructure.sale.InMemorySaleRepository;
+import com.busystem.infrastructure.order.InMemoryOrderRepository;
 
 
 import com.busystem.domain.order.OrderItem;
@@ -28,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * SaleServiceTest
  */
-public class SaleServiceTest {
-    private SaleService saleService;
-    private SaleRepository saleRepository;
+public class OrderServiceTest {
+    private OrderService orderService;
+    private OrderRepository orderRepository;
     private ProductRepository productRepository;
-    private static Order sale;
+    private static Order order;
     private List<OrderItem> orderItemListTest;
     private Product product;
    
@@ -40,11 +40,11 @@ public class SaleServiceTest {
     @BeforeEach
     void setUp(){
        
-        saleRepository = new InMemorySaleRepository();
+        orderRepository = new InMemoryOrderRepository();
 
         productRepository = new InMemoryProductRepository();
 
-        saleService  = new SaleService(saleRepository, productRepository);
+        orderService = new OrderService(orderRepository, productRepository);
 
 
         product = new Product("laptop", "p-101", new BigDecimal("999.99"), 10);
@@ -52,7 +52,7 @@ public class SaleServiceTest {
 
 
         orderItemListTest = new ArrayList<>();
-        sale = Order.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
+        order = Order.createNewOrder("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
 
 
         
@@ -61,68 +61,68 @@ public class SaleServiceTest {
 
 
     @Test
-    @DisplayName("Test save a sale and find by id")
-    void saveAndFindSaleTest(){
+    @DisplayName("Test save a order and find by id")
+    void saveAndFindOrderTest(){
       
-      saleService.saveSale(sale);
+      orderService.saveOrder(order);
 
-      Optional<Order> findSavedSale = saleService.getSaleByID("SUC1-26-09-11-00001");
+      Optional<Order> findSavedOrder = orderService.getOrderByID("SUC1-26-09-11-00001");
 
-      assertEquals(sale,findSavedSale.orElseThrow());
+      assertEquals(order, findSavedOrder.orElseThrow());
 
     }
     
     
 
     @Test
-    @DisplayName("Test save a sale and find by id")
+    @DisplayName("Test save a order and find by id")
     void findAllSales(){
       
-      saleService.saveSale(sale);
+      orderService.saveOrder(order);
       
-      List<Order> findSavedSale = saleService.getAllSales();
+      List<Order> findSavedSale = orderService.getAllOrders();
 
       assertEquals(1, findSavedSale.size());
-      assertEquals(sale, findSavedSale.get(0));
+      assertEquals(order, findSavedSale.get(0));
     }
     
     @Test
-    @DisplayName("Discounting stock of a paid sale")
+    @DisplayName("Discounting stock of a paid order")
     void discountStockPaidSaleTest(){
       
       OrderItem orderItem = OrderItem.createNewOrderItem(product, 2);
       orderItemListTest = new ArrayList<>();
       
       
-      sale = Order.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
-      sale.addItem(orderItem);
+      order = Order.createNewOrder("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
+      order.addItem(orderItem);
       
-      saleService.saveSale(sale);
-      sale.markAsPaid();
+      orderService.saveOrder(order);
+      order.markAsPaid();
 
-      saleService.discountProductStockPaidSale("SUC1-26-09-11-00001");
+      orderService.discountProductStockPaidOrder("SUC1-26-09-11-00001");
       
       assertEquals(8, product.getStock() );
       
     }
     @Test
-    @DisplayName("Discounting stock of a paid sale")
+    @DisplayName("Discounting stock of a paid order")
     void discountStockPendingSaleTest(){
       
       OrderItem orderItem = OrderItem.createNewOrderItem(product, 2);
       orderItemListTest = new ArrayList<>();
       
       
-      sale = Order.createNewSale("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
-      sale.addItem(orderItem);
+      order = Order.createNewOrder("SUC1-26-09-11-00001", LocalDateTime.now(), orderItemListTest);
+      order.addItem(orderItem);
       
-      saleService.saveSale(sale);
+      orderService.saveOrder(order);
       
 
       
       
       assertThrows(IllegalStateException.class,
-                    () -> saleService.discountProductStockPaidSale("SUC1-26-09-11-00001"));
+                    () -> orderService.discountProductStockPaidOrder("SUC1-26-09-11-00001"));
       
     }
 

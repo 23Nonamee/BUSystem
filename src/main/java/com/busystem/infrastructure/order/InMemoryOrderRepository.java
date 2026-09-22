@@ -1,7 +1,7 @@
-package com.busystem.infrastructure.sale;
+package com.busystem.infrastructure.order;
 
 import com.busystem.domain.order.Order;
-import com.busystem.domain.order.SaleRepository;
+import com.busystem.domain.order.OrderRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemorySaleRepository implements SaleRepository {
+public class InMemoryOrderRepository implements OrderRepository {
     private final Map<String, Order> saleMap = new HashMap<>();
 
 
     @Override
-    public void save(Order sale) {
-        Objects.requireNonNull(sale, "Sale cannot be null");
-        saleMap.put(sale.getOrderId(),sale);
+    public void save(Order order) {
+        Objects.requireNonNull(order, "Sale cannot be null");
+        saleMap.put(order.getOrderId(), order);
     }
 
     @Override

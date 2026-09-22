@@ -1,7 +1,7 @@
 package com.busystem.domain.order;
 
 
-public enum SaleStatus{
+public enum OrderStatus {
         PENDING,
         PAID,
         CANCELLED

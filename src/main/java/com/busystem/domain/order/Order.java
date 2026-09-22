@@ -1,36 +1,32 @@
-package com.busystem.domain.sale;
-
-import com.busystem.domain.sale.SaleStatus;
-
-import com.busystem.domain.sale.SaleItem;
+package com.busystem.domain.order;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class Sale {
-    private final List<SaleItem> saleItemList;
-    private final String saleId;
+public class Order {
+    private final List<OrderItem> orderItemList;
+    private final String orderId;
     private final LocalDateTime dateTime;
-    private SaleStatus saleStatus;
+    private OrderStatus orderStatus;
 
-    private Sale(String saleId, LocalDateTime dateTime, SaleStatus saleStatus,  List<SaleItem> saleItemList ) {
-        this.saleId = Objects.requireNonNull(saleId, "SaleID cannot be null");
+    private Order(String orderId, LocalDateTime dateTime, OrderStatus orderStatus, List<OrderItem> orderItemList) {
+        this.orderId = Objects.requireNonNull(orderId, "SaleID cannot be null");
         this.dateTime = Objects.requireNonNull(dateTime, "DateTime cannot be null");
-        this.saleStatus = saleStatus;
-        this.saleItemList = Objects.requireNonNull(saleItemList, "Sale itemlist cannot be null");
+        this.orderStatus = orderStatus;
+        this.orderItemList = Objects.requireNonNull(orderItemList, "Sale itemlist cannot be null");
     }
     
-    public static Sale createNewSale(String saleId, LocalDateTime dateTime, List<SaleItem> saleItemList){
+    public static Order createNewOrder(String orderId, LocalDateTime dateTime, List<OrderItem> orderItemList){
         
-        return new Sale(saleId, dateTime, SaleStatus.PENDING, saleItemList);
+        return new Order(orderId, dateTime, OrderStatus.PENDING, orderItemList);
     }
 
     
-    public static Sale reconstituteSale(String saleId, LocalDateTime dateTime, SaleStatus saleStatus , List<SaleItem> saleItemList){
+    public static Order reconstituteOrder(String orderId, LocalDateTime dateTime, OrderStatus orderStatus, List<OrderItem> orderItemList){
 
-        return new Sale(saleId, dateTime, saleStatus, saleItemList);
+        return new Order(orderId, dateTime, orderStatus, orderItemList);
     }
 
 
@@ -38,47 +34,47 @@ public class Sale {
 
 
 
-    public List<SaleItem> getSaleItemList() {
-        return saleItemList;
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
     }
 
-    public String getSaleId(){
-            return saleId;
+    public String getOrderId(){
+            return orderId;
     }
 
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public SaleStatus getSaleStatus() {
-        return saleStatus;
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void addItem(SaleItem item){
+    public void addItem(OrderItem item){
         Objects.requireNonNull(item, "SaleItem cannot be null");
-        this.saleItemList.add(item);
+        this.orderItemList.add(item);
     }
 
     public BigDecimal calculateTotal() {
         BigDecimal total = BigDecimal.ZERO;
-        for (SaleItem saleItem : saleItemList) {
-            total = total.add(saleItem.getSubTotal());
+        for (OrderItem orderItem : orderItemList) {
+            total = total.add(orderItem.getSubTotal());
         }
         return total;
     }
 
     public void markAsPaid(){
-        if (!(saleStatus == SaleStatus.PENDING)) {
+        if (!(orderStatus == OrderStatus.PENDING)) {
            throw new IllegalStateException("Cannot change a sale status that is not pending"); 
         }
-        this.saleStatus = SaleStatus.PAID;
+        this.orderStatus = OrderStatus.PAID;
     }
 
     public void markAsCancelled(){
-        if (!(saleStatus == SaleStatus.PENDING)) {
+        if (!(orderStatus == OrderStatus.PENDING)) {
            throw new IllegalStateException("Cannot change a sale status that is not pending"); 
         }
-        this.saleStatus = SaleStatus.CANCELLED;
+        this.orderStatus = OrderStatus.CANCELLED;
 
     }
 

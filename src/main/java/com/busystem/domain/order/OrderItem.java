@@ -1,6 +1,4 @@
-package com.busystem.domain.sale;
-
-import com.busystem.domain.sale.Sale;
+package com.busystem.domain.order;
 
 import com.busystem.domain.product.Product;
 
@@ -8,12 +6,12 @@ import com.busystem.domain.product.Product;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class SaleItem {
+public class OrderItem {
     private final Product product;
     private final int quantity;
     private final BigDecimal unitPrice;
 
-    private SaleItem(Product product, int quantity, BigDecimal price) {
+    private OrderItem(Product product, int quantity, BigDecimal price) {
         this.product = Objects.requireNonNull(product,"Product cannot be null");
         this.unitPrice = Objects.requireNonNull(price, "Unit price cannot be null");
 
@@ -29,15 +27,15 @@ public class SaleItem {
 
     }
 
-    public static SaleItem createNewSaleItem(Product product, int quantity){
+    public static OrderItem createNewOrderItem(Product product, int quantity){
 
-        return new SaleItem(product, quantity, product.getPrice());
+        return new OrderItem(product, quantity, product.getPrice());
 
     }
 
-    public static SaleItem reconstituteNewSaleItem(Product product, int quantity, BigDecimal historicalPrice){
+    public static OrderItem reconstituteNewOrderItem(Product product, int quantity, BigDecimal historicalPrice){
 
-        return new SaleItem(product, quantity, historicalPrice);
+        return new OrderItem(product, quantity, historicalPrice);
 
     }
 

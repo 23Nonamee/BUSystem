@@ -1,17 +1,11 @@
-package com.busystem.domain.sale;
-import com.busystem.domain.product.Product;
-
-import com.busystem.domain.sale.SaleItem;
-
-import com.busystem.domain.sale.Sale;
-
+package com.busystem.domain.order;
 import com.busystem.domain.product.Product;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 
-class SaleItemTest {
+class OrderItemTest {
     String name = "Laptop";
     String id = "P-101";
     BigDecimal price = new BigDecimal("999.99");
@@ -19,12 +13,12 @@ class SaleItemTest {
 
     Product product = new Product(name, id, price, stock);
 
-    SaleItem saleItem = SaleItem.createNewSaleItem(product, 3);
+    OrderItem orderItem = OrderItem.createNewOrderItem(product, 3);
 
     @Test
     @DisplayName("Get quantity")
     void getUnitPriceTest() {
-        BigDecimal itemPrice = saleItem.getUnitPrice();
+        BigDecimal itemPrice = orderItem.getUnitPrice();
 
         assertEquals(price, itemPrice);
     }
@@ -32,7 +26,7 @@ class SaleItemTest {
     @Test
     @DisplayName("Get unit price")
     void getQuantityTest() {
-        int itemQuantity = saleItem.getQuantity();
+        int itemQuantity = orderItem.getQuantity();
 
         assertEquals(3, itemQuantity);
     }
@@ -40,7 +34,7 @@ class SaleItemTest {
     @Test
     @DisplayName("Get subtotal SaleItem ")
     void getSubtotalTest() {
-        BigDecimal subTotal = saleItem.getSubTotal();
+        BigDecimal subTotal = orderItem.getSubTotal();
 
         BigDecimal expectedSubTotal = new BigDecimal("2999.97");
 
@@ -54,10 +48,10 @@ class SaleItemTest {
         int zeroQuantity = 0;
 
         assertThrows(IllegalArgumentException.class,
-                () -> SaleItem.createNewSaleItem(product, negativeQuantity));
+                () -> OrderItem.createNewOrderItem(product, negativeQuantity));
 
         assertThrows(IllegalArgumentException.class,
-                () -> SaleItem.createNewSaleItem(product, zeroQuantity));
+                () -> OrderItem.createNewOrderItem(product, zeroQuantity));
 
     }
 

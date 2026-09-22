@@ -1,7 +1,7 @@
-package com.busystem.application.sale;
+package com.busystem.application.order;
 
 import com.busystem.domain.order.Order;
-import com.busystem.domain.order.SaleRepository;
+import com.busystem.domain.order.OrderRepository;
 import com.busystem.domain.order.OrderStatus;
 import com.busystem.domain.order.OrderItem;
 import com.busystem.domain.product.Product;
@@ -13,42 +13,42 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SaleService {
-    private final SaleRepository saleRepository;
+public class OrderService {
+    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
-    public SaleService(SaleRepository saleRepository, ProductRepository productRepository) {
-        this.saleRepository = saleRepository;
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
         this.productRepository = productRepository;
     }
 
-    public void saveSale(Order sale){
-        Objects.requireNonNull(sale);
-        saleRepository.save(sale);
+    public void saveOrder(Order order){
+        Objects.requireNonNull(order);
+        orderRepository.save(order);
     }
 
-    public Optional<Order> getSaleByID(String id){
+    public Optional<Order> getOrderByID(String id){
 
 
-        return saleRepository.findById(id);
+        return orderRepository.findById(id);
     }
 
-    public List<Order> getAllSales(){
+    public List<Order> getAllOrders(){
 
-        return saleRepository.findAll();
+        return orderRepository.findAll();
     }
     
-    public void discountProductStockPaidSale(String saleId){
+    public void discountProductStockPaidOrder(String orderId){
 
-        Order sale = saleRepository.findById(saleId).orElseThrow(
-                                                  () -> new NoSuchElementException("No sale found with ID: " + saleId));
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                                                  () -> new NoSuchElementException("No order found with ID: " + orderId));
         
-        if (sale.getOrderStatus() != OrderStatus.PAID){
+        if (order.getOrderStatus() != OrderStatus.PAID){
             throw new IllegalStateException("Status is not pending. The stock cannot be modify.");
 
         }
         
-        for (OrderItem item : sale.getOrderItemList()){
+        for (OrderItem item : order.getOrderItemList()){
 
           String productId = item.getProduct().getId();
           int purchasedQuantity = item.getQuantity();
@@ -63,6 +63,6 @@ public class SaleService {
           productRepository.save(productInInventory);
         }
 
-        saleRepository.save(sale);
+        orderRepository.save(order);
     }
 }

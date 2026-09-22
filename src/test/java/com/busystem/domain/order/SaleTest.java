@@ -1,10 +1,4 @@
-package com.busystem.domain.sale;
-
-import com.busystem.domain.sale.SaleStatus;
-
-import com.busystem.domain.sale.SaleItem;
-
-import com.busystem.domain.sale.Sale;
+package com.busystem.domain.order;
 
 import com.busystem.domain.product.Product;
 
@@ -23,37 +17,37 @@ class SaleTest {
 
     private String saleId;
     private LocalDateTime dateTime;
-    private SaleStatus saleStatus;
+    private OrderStatus orderStatus;
     private BigDecimal price;
-    private SaleItem saleItem;
-    private Sale sale;
-    private List<SaleItem> saleItemListTest;
+    private OrderItem orderItem;
+    private Order sale;
+    private List<OrderItem> orderItemListTest;
 
     @BeforeEach
     void setUp() {
         saleId = "SUC1-26-09-11-00001";
         dateTime = LocalDateTime.now();
-        saleStatus = SaleStatus.PENDING;
+        orderStatus = OrderStatus.PENDING;
         price = new BigDecimal("999.99");
 
         Product product = new Product("Laptop", "P-101", price, 3);
-        saleItem = SaleItem.createNewSaleItem(product, 3);
+        orderItem = OrderItem.createNewOrderItem(product, 3);
 
-        saleItemListTest = new ArrayList<>();
-        sale = Sale.createNewSale(saleId, dateTime, saleItemListTest);
+        orderItemListTest = new ArrayList<>();
+        sale = Order.createNewOrder(saleId, dateTime, orderItemListTest);
     }
 
     @Test
     @DisplayName("Get SaleID")
     void getSaleid(){
-        assertEquals(saleId ,sale.getSaleId());
+        assertEquals(saleId ,sale.getOrderId());
     }
 
     @Test
     @DisplayName("Get SaleItem")
     void getSaleItemTest(){
-        sale.addItem(saleItem);
-        assertEquals(saleItemListTest,sale.getSaleItemList());
+        sale.addItem(orderItem);
+        assertEquals(orderItemListTest,sale.getOrderItemList());
     }
 
     @Test
@@ -65,14 +59,14 @@ class SaleTest {
     @Test
     @DisplayName("Get SaleStatus")
     void getSaleStatus(){
-        assertEquals(saleStatus, sale.getSaleStatus());
+        assertEquals(orderStatus, sale.getOrderStatus());
     }
 
     @Test
     @DisplayName("Add an item to sale")
     void addItemSaleTest(){
-        sale.addItem(saleItem);
-        assertEquals(saleItemListTest, sale.getSaleItemList());
+        sale.addItem(orderItem);
+        assertEquals(orderItemListTest, sale.getOrderItemList());
 
     }
 
@@ -81,7 +75,7 @@ class SaleTest {
     void getCalculateTotal(){
 
         BigDecimal realPrice = price.multiply(new BigDecimal(3));
-        sale.addItem(saleItem);
+        sale.addItem(orderItem);
         assertEquals(realPrice, sale.calculateTotal());
 
     }
@@ -91,7 +85,7 @@ class SaleTest {
     void markAsPaid(){
 
         sale.markAsPaid();
-        assertEquals(SaleStatus.PAID, sale.getSaleStatus());
+        assertEquals(OrderStatus.PAID, sale.getOrderStatus());
         
 
     }
@@ -101,7 +95,7 @@ class SaleTest {
     void markAsCancelled(){
 
         sale.markAsCancelled();
-        assertEquals(SaleStatus.CANCELLED, sale.getSaleStatus());
+        assertEquals(OrderStatus.CANCELLED, sale.getOrderStatus());
         
 
     }

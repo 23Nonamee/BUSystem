@@ -1,5 +1,5 @@
 //packages
-package com.busystem.infrastructure.sale;
+package com.busystem.infrastructure.order;
 
 //libraries
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,8 @@ import com.busystem.domain.order.OrderStatus;
 /**
  * InMemorySaleRepositoryTest
  */
-public class InMemorySaleRepositoryTest {
-  InMemorySaleRepository repository = new InMemorySaleRepository();
+public class InMemoryOrderRepositoryTest {
+  InMemoryOrderRepository repository = new InMemoryOrderRepository();
 
   @Test
   @DisplayName("Save and find a sale")
@@ -31,7 +31,7 @@ public class InMemorySaleRepositoryTest {
     OrderStatus orderStatus = OrderStatus.PENDING;
     List<OrderItem> items = new ArrayList<>();
 
-    Order sale = Order.reconstituteSale(saleId, dateTime, orderStatus, items);
+    Order sale = Order.reconstituteOrder(saleId, dateTime, orderStatus, items);
 
     repository.save(sale);
 
