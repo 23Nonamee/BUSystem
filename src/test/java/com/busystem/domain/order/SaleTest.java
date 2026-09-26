@@ -15,17 +15,17 @@ import java.util.List;
 
 class SaleTest {
 
-    private String saleId;
+    private String orderId;
     private LocalDateTime dateTime;
     private OrderStatus orderStatus;
     private BigDecimal price;
     private OrderItem orderItem;
-    private Order sale;
+    private Order order;
     private List<OrderItem> orderItemListTest;
 
     @BeforeEach
     void setUp() {
-        saleId = "SUC1-26-09-11-00001";
+        orderId = "SUC1-26-09-11-00001";
         dateTime = LocalDateTime.now();
         orderStatus = OrderStatus.PENDING;
         price = new BigDecimal("999.99");
@@ -34,39 +34,39 @@ class SaleTest {
         orderItem = OrderItem.createNewOrderItem(product, 3);
 
         orderItemListTest = new ArrayList<>();
-        sale = Order.createNewOrder(saleId, dateTime, orderItemListTest);
+        order = Order.createNewOrder(orderId, dateTime, orderItemListTest);
     }
 
     @Test
     @DisplayName("Get SaleID")
     void getSaleid(){
-        assertEquals(saleId ,sale.getOrderId());
+        assertEquals(orderId, order.getOrderId());
     }
 
     @Test
     @DisplayName("Get SaleItem")
     void getSaleItemTest(){
-        sale.addItem(orderItem);
-        assertEquals(orderItemListTest,sale.getOrderItemList());
+        order.addItem(orderItem);
+        assertEquals(orderItemListTest, order.getOrderItemList());
     }
 
     @Test
     @DisplayName("Get LocalTimeDate")
     void getLocalTimeDate(){
-        assertEquals(dateTime, sale.getDateTime());
+        assertEquals(dateTime, order.getDateTime());
     }
 
     @Test
     @DisplayName("Get SaleStatus")
     void getSaleStatus(){
-        assertEquals(orderStatus, sale.getOrderStatus());
+        assertEquals(orderStatus, order.getOrderStatus());
     }
 
     @Test
     @DisplayName("Add an item to sale")
     void addItemSaleTest(){
-        sale.addItem(orderItem);
-        assertEquals(orderItemListTest, sale.getOrderItemList());
+        order.addItem(orderItem);
+        assertEquals(orderItemListTest, order.getOrderItemList());
 
     }
 
@@ -75,8 +75,8 @@ class SaleTest {
     void getCalculateTotal(){
 
         BigDecimal realPrice = price.multiply(new BigDecimal(3));
-        sale.addItem(orderItem);
-        assertEquals(realPrice, sale.calculateTotal());
+        order.addItem(orderItem);
+        assertEquals(realPrice, order.calculateTotal());
 
     }
 
@@ -84,8 +84,8 @@ class SaleTest {
     @DisplayName("Mark sale status as paid")
     void markAsPaid(){
 
-        sale.markAsPaid();
-        assertEquals(OrderStatus.PAID, sale.getOrderStatus());
+        order.markAsPaid();
+        assertEquals(OrderStatus.PAID, order.getOrderStatus());
         
 
     }
@@ -94,8 +94,8 @@ class SaleTest {
     @DisplayName("Mark sale status as cancelled")
     void markAsCancelled(){
 
-        sale.markAsCancelled();
-        assertEquals(OrderStatus.CANCELLED, sale.getOrderStatus());
+        order.markAsCancelled();
+        assertEquals(OrderStatus.CANCELLED, order.getOrderStatus());
         
 
     }
@@ -104,10 +104,10 @@ class SaleTest {
     @DisplayName("try to mark a not pending sale as paid")
     void notPendingSaleAsPaid(){
       
-      sale.markAsCancelled();
+      order.markAsCancelled();
       
       assertThrows(IllegalStateException.class,
-                    () ->sale.markAsPaid());
+                    () -> order.markAsPaid());
 
     }
 
@@ -115,11 +115,11 @@ class SaleTest {
     @DisplayName("try to mark a not pending sale as cancelled")
     void notPendingSaleAsCancelled(){
 
-      sale.markAsPaid();
+      order.markAsPaid();
       
 
       assertThrows(IllegalStateException.class,
-                    ()-> sale.markAsCancelled());
+                    ()-> order.markAsCancelled());
 
     }
 

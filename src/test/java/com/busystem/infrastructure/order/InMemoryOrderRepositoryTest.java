@@ -17,53 +17,53 @@ import com.busystem.domain.order.OrderStatus;
 
 
 /**
- * InMemorySaleRepositoryTest
+ * InMemoryOrderRepositoryTest
  */
 public class InMemoryOrderRepositoryTest {
   InMemoryOrderRepository repository = new InMemoryOrderRepository();
 
   @Test
-  @DisplayName("Save and find a sale")
-  void saveAndFindSale(){
+  @DisplayName("Save and find a order")
+  void saveAndFindOrder(){
 
-    String saleId = "SUC1-001";
+    String orderId = "SUC1-001";
     LocalDateTime dateTime = LocalDateTime.now();
     OrderStatus orderStatus = OrderStatus.PENDING;
     List<OrderItem> items = new ArrayList<>();
 
-    Order sale = Order.reconstituteOrder(saleId, dateTime, orderStatus, items);
+    Order order = Order.reconstituteOrder(orderId, dateTime, orderStatus, items);
 
-    repository.save(sale);
+    repository.save(order);
 
-    Optional<Order> result = repository.findById(saleId);
+    Optional<Order> result = repository.findById(orderId);
 
     assertTrue(result.isPresent());
-    assertEquals(sale, result.get());
+    assertEquals(order, result.get());
   }
 
   @Test
-  @DisplayName("Non existent sale")
+  @DisplayName("Non existent order")
   void notExistent(){
 
-    String saleId = "SUC1-999";
+    String orderId = "SUC1-999";
 
-    Optional<Order> result = repository.findById(saleId);
+    Optional<Order> result = repository.findById(orderId);
 
     assertFalse(result.isPresent());
   }
 
   @Test
-  @DisplayName("Listing Sales")
+  @DisplayName("Listing Orders")
   void Listing(){
 
-    List<Order> sales = repository.findAll();
+    List<Order> orders = repository.findAll();
 
-    assertTrue(sales.isEmpty());
+    assertTrue(orders.isEmpty());
   }
 
   @Test
-  @DisplayName("Save null sale")
-  void saveNullSale(){
+  @DisplayName("Save null order")
+  void saveNullorder(){
 
     assertThrows(NullPointerException.class,
             () -> repository.save(null));

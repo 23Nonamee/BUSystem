@@ -42,7 +42,6 @@ public class OrderItem {
 
     public Product getProduct (){
         return product;
-
     }
 
 
